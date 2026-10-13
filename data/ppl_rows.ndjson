@@ -1,0 +1,2 @@
+{"ts":"1791132404","kind":"ppl","model":"qwen2b-fresh","engine":"stock","corpus":"ppl_corpus.txt","corpus_bytes":90726,"ctx":2048,"threads":6,"perplexity":12.0265,"wall_s":459.4,"ppl_stderr":0.30076,"note":"parse-bug row corrected in-session; log is authoritative"}
+{"ts":"1791132404","kind":"ppl","model":"qwen2b-fresh","engine":"mod","corpus":"ppl_corpus.txt","corpus_bytes":90726,"ctx":2048,"threads":6,"perplexity":12.0265,"wall_s":724.5,"ppl_stderr":0.30076,"note":"parse-bug row corrected in-session; log is authoritative"}

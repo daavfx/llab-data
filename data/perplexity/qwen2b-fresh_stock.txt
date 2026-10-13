@@ -1,0 +1,13 @@
+=== llab M4 perplexity | model=qwen2b-fresh (unsloth current-converter) | engine=stock | corpus=88.6KB | ctx=2048 t=6 | ts=1791132404
+6.88 minutes
+[1]5.4915,[2]5.7134,[3]7.5912,[4]9.1511,[5]9.1094,[6]8.6241,[7]9.5220,[8]10.0026,[9]10.1675,[10]10.9457,[11]11.2018,[12]11.0552,[13]12.1140,[14]11.7072,[15]12.1499,[16]12.0028,[17]12.0265,
+
+0.14.946.816 I cmn          init: llama threadpool init, n_threads = 6
+0.15.140.005 I 
+0.15.140.051 I system_info: n_threads = 6 (n_threads_batch = 6) / 12 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.15.140.058 I perplexity: tokenizing the input ..
+0.15.188.510 I perplexity: tokenization took 48.436 ms
+0.15.188.553 I perplexity: calculating perplexity over 17 chunks, n_ctx=2048, batch_size=2048, n_seq=1
+0.39.527.010 I perplexity: 24.34 seconds per pass - ETA 7.38.712.585 I Final estimate: PPL = 12.0265 +/- 0.30076
+RESULT engine=stock perplexity= wall_s=459.4
+RESULT engine=stock perplexity=12.0265 ppl_stderr=0.30076 wall_s=459.4

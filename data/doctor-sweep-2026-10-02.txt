@@ -1,0 +1,546 @@
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-IQ3_S.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-IQ3_S.gguf
+size        : 11.29 GB (11289671136 B)
+gguf ver    : 3
+tensors     : 658 (names read: no (use --full))
+kv pairs    : 60
+arch/name   : gemma4 / Gemma-4-26B-A4B-It
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(30)
+rope theta  : "?"
+file_type   : Some(26)
+tok model   : Some("gemma4")
+tok pre     : None
+bos/eos     : Some(2) / Some(106)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 142 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-Q3_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-Q3_K_M.gguf
+size        : 12.73 GB (12728495904 B)
+gguf ver    : 3
+tensors     : 658 (names read: no (use --full))
+kv pairs    : 60
+arch/name   : gemma4 / Gemma-4-26B-A4B-It
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(30)
+rope theta  : "?"
+file_type   : Some(12)
+tok model   : Some("gemma4")
+tok pre     : None
+bos/eos     : Some(2) / Some(106)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 134 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\01-moe-26b-a4b_gemma4-unsloth\gemma-4-26B-A4B-it-UD-Q4_K_M.gguf
+size        : 16.95 GB (16947539744 B)
+gguf ver    : 3
+tensors     : 658 (names read: no (use --full))
+kv pairs    : 60
+arch/name   : gemma4 / Gemma-4-26B-A4B-It
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(30)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gemma4")
+tok pre     : None
+bos/eos     : Some(2) / Some(106)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 135 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\05-dense-4b_gemma4-e4b-unsloth\gemma-4-E4B-it-Q3_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\05-dense-4b_gemma4-e4b-unsloth\gemma-4-E4B-it-Q3_K_M.gguf
+size        : 4.06 GB (4058135712 B)
+gguf ver    : 3
+tensors     : 720 (names read: no (use --full))
+kv pairs    : 56
+arch/name   : gemma4 / Gemma-4-E4B-It
+ctx         : Some(131072)
+vocab       : None
+blocks      : Some(42)
+rope theta  : "?"
+file_type   : Some(12)
+tok model   : Some("gemma4")
+tok pre     : None
+bos/eos     : Some(2) / Some(106)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 134 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\05-dense-4b_gemma4-e4b-unsloth\gemma-4-E4B-it-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\05-dense-4b_gemma4-e4b-unsloth\gemma-4-E4B-it-Q4_K_M.gguf
+size        : 4.98 GB (4977169568 B)
+gguf ver    : 3
+tensors     : 720 (names read: no (use --full))
+kv pairs    : 56
+arch/name   : gemma4 / Gemma-4-E4B-It
+ctx         : Some(131072)
+vocab       : None
+blocks      : Some(42)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gemma4")
+tok pre     : None
+bos/eos     : Some(2) / Some(106)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 134 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\09-LFM2.5-8B-A1B\LFM2.5-8B-A1B-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\09-LFM2.5-8B-A1B\LFM2.5-8B-A1B-Q4_K_M.gguf
+size        : 5.16 GB (5155564768 B)
+gguf ver    : 3
+tensors     : 256 (names read: no (use --full))
+kv pairs    : 39
+arch/name   : lfm2moe / Feb5E04Da4910Dd56D33F0Cd03747Ff298C1E801
+ctx         : Some(128000)
+vocab       : Some(128000)
+blocks      : Some(24)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("lfm2")
+bos/eos     : Some(124894) / Some(124900)
+add_bos     : None
+template    : present
+parsed in   : 66 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: lfm2
+[OK  ] ChatML
+[WARN] hard-seeded <think> template, no enable_thinking switch (budget-fill risk; needs big max_tokens)
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\15-qwen3.5-2b4b\qwen3.5-2b-q4km.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\15-qwen3.5-2b4b\qwen3.5-2b-q4km.gguf
+size        : 1.95 GB (1945311744 B)
+gguf ver    : 3
+tensors     : 728 (names read: no (use --full))
+kv pairs    : 52
+arch/name   : qwen35 / -
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(24)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("qwen35")
+bos/eos     : None / Some(248046)
+add_bos     : None
+template    : present
+parsed in   : 90 ms
+--- CHECKS ---
+[WARN] bos_token_id missing
+[OK  ] pre-tokenizer recognized: qwen35
+[OK  ] ChatML
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\15-qwen3.5-2b4b\qwen3.5-4b-q4km.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\15-qwen3.5-2b4b\qwen3.5-4b-q4km.gguf
+size        : 3.39 GB (3389971840 B)
+gguf ver    : 3
+tensors     : 834 (names read: no (use --full))
+kv pairs    : 52
+arch/name   : qwen35 / -
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(32)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("qwen35")
+bos/eos     : None / Some(248046)
+add_bos     : None
+template    : present
+parsed in   : 89 ms
+--- CHECKS ---
+[WARN] bos_token_id missing
+[OK  ] pre-tokenizer recognized: qwen35
+[OK  ] ChatML
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\16-k2-horizon-7b\K2-Horizon-7B-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\16-k2-horizon-7b\K2-Horizon-7B-Q4_K_M.gguf
+size        : 5.59 GB (5592218304 B)
+gguf ver    : 3
+tensors     : 327 (names read: no (use --full))
+kv pairs    : 35
+arch/name   : k2-horizon / Checkpoint_0002500
+ctx         : Some(524288)
+vocab       : None
+blocks      : Some(36)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("k2-horizon")
+bos/eos     : Some(0) / Some(1)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 85 ms
+--- CHECKS ---
+[WARN] pre-tokenizer 'k2-horizon' not in llama.cpp known list (converted-only paths - behavior drift risk)
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\17-k2-horizon-mova-36b-a4b\K2-Horizon-MoVA-36B-A4B-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\17-k2-horizon-mova-36b-a4b\K2-Horizon-MoVA-36B-A4B-Q4_K_M.gguf
+size        : 22.37 GB (22368011616 B)
+gguf ver    : 3
+tensors     : 798 (names read: no (use --full))
+kv pairs    : 41
+arch/name   : k2-horizon / Checkpoint_0002500
+ctx         : Some(524288)
+vocab       : None
+blocks      : Some(48)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("k2-horizon")
+bos/eos     : Some(0) / Some(1)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 89 ms
+--- CHECKS ---
+[WARN] pre-tokenizer 'k2-horizon' not in llama.cpp known list (converted-only paths - behavior drift risk)
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\19-ternary-bonsai-27b\Ternary-Bonsai-2-27B-PQ2_0.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\19-ternary-bonsai-27b\Ternary-Bonsai-2-27B-PQ2_0.gguf
+size        : 7.21 GB (7206168928 B)
+gguf ver    : 3
+tensors     : 851 (names read: no (use --full))
+kv pairs    : 49
+arch/name   : qwen35 / Hf
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(64)
+rope theta  : "?"
+file_type   : Some(141)
+tok model   : Some("gpt2")
+tok pre     : Some("qwen35")
+bos/eos     : Some(248044) / Some(248046)
+add_bos     : Some(Bool(false))
+template    : present
+parsed in   : 83 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: qwen35
+[OK  ] ChatML
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 0 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\19-ternary-bonsai-27b\Ternary-Bonsai-2-27B-PTQ1_0.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\19-ternary-bonsai-27b\Ternary-Bonsai-2-27B-PTQ1_0.gguf
+size        : 5.95 GB (5946648928 B)
+gguf ver    : 3
+tensors     : 851 (names read: no (use --full))
+kv pairs    : 49
+arch/name   : qwen35 / Hf
+ctx         : Some(262144)
+vocab       : None
+blocks      : Some(64)
+rope theta  : "?"
+file_type   : Some(143)
+tok model   : Some("gpt2")
+tok pre     : Some("qwen35")
+bos/eos     : Some(248044) / Some(248046)
+add_bos     : Some(Bool(false))
+template    : present
+parsed in   : 85 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: qwen35
+[OK  ] ChatML
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 0 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\20-granite\granite-4.0-tiny-preview-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\20-granite\granite-4.0-tiny-preview-Q4_K_M.gguf
+size        : 4.05 GB (4049882560 B)
+gguf ver    : 3
+tensors     : 666 (names read: no (use --full))
+kv pairs    : 45
+arch/name   : granitehybrid / Granite 4.0 Tiny Preview
+ctx         : Some(1048576)
+vocab       : Some(49160)
+blocks      : Some(40)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("refact")
+bos/eos     : Some(0) / Some(0)
+add_bos     : None
+template    : present
+parsed in   : 15 ms
+--- CHECKS ---
+[WARN] bos == eos == 0 (start-token designs like Pleias; verify intent)
+[OK  ] pre-tokenizer recognized: refact
+[WARN] hard-seeded <think> template, no enable_thinking switch (budget-fill risk; needs big max_tokens)
+--- VERDICT: 0 error(s), 2 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\20-granite\granite-4.2-8b-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\20-granite\granite-4.2-8b-Q4_K_M.gguf
+size        : 5.35 GB (5347917952 B)
+gguf ver    : 3
+tensors     : 363 (names read: no (use --full))
+kv pairs    : 41
+arch/name   : granite / Granite 4.2 8b
+ctx         : Some(131072)
+vocab       : Some(100352)
+blocks      : Some(40)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("granite-docling")
+bos/eos     : Some(100283) / Some(100257)
+add_bos     : None
+template    : present
+parsed in   : 32 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: granite-docling
+[OK  ] ChatML
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 0 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\21-embeddings\nomic-embed-text-v1.5.Q8_0.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\21-embeddings\nomic-embed-text-v1.5.Q8_0.gguf
+size        : 0.15 GB (146146432 B)
+gguf ver    : 3
+tensors     : 112 (names read: no (use --full))
+kv pairs    : 23
+arch/name   : nomic-bert / nomic-embed-text-v1.5
+ctx         : Some(2048)
+vocab       : None
+blocks      : Some(12)
+rope theta  : "?"
+file_type   : Some(7)
+tok model   : Some("bert")
+tok pre     : None
+bos/eos     : Some(101) / Some(102)
+add_bos     : None
+template    : MISSING
+parsed in   : 5 ms
+--- CHECKS ---
+[WARN] no tokenizer.ggml.pre key
+[WARN] no chat template
+[WARN] ctx 2048 <= 2048: tight for thinking models (prompt+trace+answer share window)
+--- VERDICT: 0 error(s), 3 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\22-baguettotron-600m\baguettotron-600m-bf16.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\22-baguettotron-600m\baguettotron-600m-bf16.gguf
+size        : 1.22 GB (1219095168 B)
+gguf ver    : 3
+tensors     : 434 (names read: no (use --full))
+kv pairs    : 30
+arch/name   : llama / Hf
+ctx         : Some(2048)
+vocab       : Some(65536)
+blocks      : Some(48)
+rope theta  : "?"
+file_type   : Some(32)
+tok model   : Some("gpt2")
+tok pre     : Some("llama-bpe")
+bos/eos     : Some(2) / Some(65492)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 20 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: llama-bpe
+[OK  ] ChatML
+[WARN] hard-seeded <think> template, no enable_thinking switch (budget-fill risk; needs big max_tokens)
+[WARN] ctx 2048 <= 2048: tight for thinking models (prompt+trace+answer share window)
+--- VERDICT: 0 error(s), 2 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\22-baguettotron-600m\baguettotron-600m-q4km.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\22-baguettotron-600m\baguettotron-600m-q4km.gguf
+size        : 0.38 GB (381610624 B)
+gguf ver    : 3
+tensors     : 434 (names read: no (use --full))
+kv pairs    : 30
+arch/name   : llama / Hf
+ctx         : Some(2048)
+vocab       : Some(65536)
+blocks      : Some(48)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("llama-bpe")
+bos/eos     : Some(2) / Some(65492)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 21 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: llama-bpe
+[OK  ] ChatML
+[WARN] hard-seeded <think> template, no enable_thinking switch (budget-fill risk; needs big max_tokens)
+[WARN] ctx 2048 <= 2048: tight for thinking models (prompt+trace+answer share window)
+--- VERDICT: 0 error(s), 2 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\laguna-xs-2.1\Laguna-XS-2.1-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\laguna-xs-2.1\Laguna-XS-2.1-Q4_K_M.gguf
+size        : 20.27 GB (20274300032 B)
+gguf ver    : 3
+tensors     : 678 (names read: no (use --full))
+kv pairs    : 56
+arch/name   : laguna / 2afce91e7cdb129f891d65a18f54d4a63f8e3215
+ctx         : Some(262144)
+vocab       : Some(100352)
+blocks      : Some(40)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("laguna")
+bos/eos     : Some(2) / Some(2)
+add_bos     : Some(Bool(true))
+template    : present
+parsed in   : 34 ms
+--- CHECKS ---
+[WARN] bos == eos == 2 (start-token designs like Pleias; verify intent)
+[OK  ] pre-tokenizer recognized: laguna
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\spark-x2.5-4b\Spark-X2.5-4B-Q4_K_M.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\llm-collection\spark-x2.5-4b\Spark-X2.5-4B-Q4_K_M.gguf
+size        : 2.60 GB (2600224352 B)
+gguf ver    : 3
+tensors     : 290 (names read: no (use --full))
+kv pairs    : 37
+arch/name   : spark2_5 / Hf_Format
+ctx         : Some(1048576)
+vocab       : Some(131072)
+blocks      : Some(36)
+rope theta  : "?"
+file_type   : Some(15)
+tok model   : Some("gpt2")
+tok pre     : Some("spark2_5")
+bos/eos     : Some(0) / Some(1)
+add_bos     : Some(Bool(false))
+template    : present
+parsed in   : 44 ms
+--- CHECKS ---
+[WARN] pre-tokenizer 'spark2_5' not in llama.cpp known list (converted-only paths - behavior drift risk)
+[OK  ] enable_thinking switch in template
+--- VERDICT: 0 error(s), 1 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\media-collection\OCR\PaddleOCR-VL-1.6-GGUF-mmproj.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\media-collection\OCR\PaddleOCR-VL-1.6-GGUF-mmproj.gguf
+size        : 0.88 GB (881770560 B)
+gguf ver    : 3
+tensors     : 443 (names read: no (use --full))
+kv pairs    : 31
+arch/name   : clip / PaddleOCR VL 1.6
+ctx         : None
+vocab       : None
+blocks      : None
+rope theta  : "-"
+file_type   : Some(32)
+tok model   : None
+tok pre     : None
+bos/eos     : None / None
+add_bos     : None
+template    : MISSING
+parsed in   : 0 ms
+--- CHECKS ---
+[ERR ] tokenizer.ggml.eos_token_id MISSING (baguettotron-2026-10-00 lesson: llama.cpp falls back eos<-bos => premature stops)
+[WARN] bos_token_id missing
+[WARN] no tokenizer.ggml.pre key
+[WARN] no chat template
+--- VERDICT: 1 error(s), 3 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\media-collection\OCR\PaddleOCR-VL-1.6-GGUF.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\media-collection\OCR\PaddleOCR-VL-1.6-GGUF.gguf
+size        : 0.94 GB (935769056 B)
+gguf ver    : 3
+tensors     : 165 (names read: no (use --full))
+kv pairs    : 42
+arch/name   : paddleocr / PaddleOCR VL 1.6
+ctx         : Some(131072)
+vocab       : None
+blocks      : Some(18)
+rope theta  : "?"
+file_type   : Some(32)
+tok model   : Some("llama")
+tok pre     : Some("default")
+bos/eos     : Some(1) / Some(2)
+add_bos     : Some(Bool(false))
+template    : present
+parsed in   : 19 ms
+--- CHECKS ---
+[OK  ] pre-tokenizer recognized: default
+--- VERDICT: 0 error(s), 0 warning(s) ---
+
+########## F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\RYIUK\checkpoints\amn_backtest_memory.gguf
+=== GGUF DOCTOR ===
+file        : F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\local_llm\GGUF\RYIUK\checkpoints\amn_backtest_memory.gguf
+size        : 0.00 GB (1152 B)
+gguf ver    : 3
+tensors     : 1 (names read: no (use --full))
+kv pairs    : 8
+arch/name   : ? / -
+ctx         : None
+vocab       : None
+blocks      : None
+rope theta  : "-"
+file_type   : None
+tok model   : None
+tok pre     : None
+bos/eos     : None / None
+add_bos     : None
+template    : MISSING
+parsed in   : 0 ms
+--- CHECKS ---
+[ERR ] tokenizer.ggml.eos_token_id MISSING (baguettotron-2026-10-00 lesson: llama.cpp falls back eos<-bos => premature stops)
+[WARN] bos_token_id missing
+[WARN] no tokenizer.ggml.pre key
+[WARN] no chat template
+--- VERDICT: 1 error(s), 3 warning(s) ---
+

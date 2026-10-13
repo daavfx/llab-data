@@ -1,0 +1,1179 @@
+FROZEN CORPUS for llab M4 quality axis. Built 2026-10-04 from local_llm docs, deterministic order (sorted by path), ascii-only.
+
+===== MICRO_BENCH_CONFIGS.md =====
+# MICRO-BENCH CONFIGS ??? overnight rerun for excluded files (docs only, no runs yet)
+
+Global: `-ngl 0 --seed 42 --temp 0`, bench `p128/n32 -r 1 --no-warmup`, quality `n=32` with `-rea off -st --simple-io`, guard **1800 s** per run. Binaries/paths are resolved at greenlight time in `RUN_OVERNIGHT.ps1`.
+
+| model (file) | file GB | ctx | threads | bench | quality | guard | rationale (from peaks) |
+|---|---|---|---|---|---|---|---|
+| MoVA-36B-A4B Q4_K_M | 20.83 | 1024 | t6 | p128/n32 STOCK+MOD | n=32 STOCK+MOD | 1800 s | MOD run starved host at t10 (CLR errors in fresh shells); t6 keeps owner PC responsive. ctx1024 caps KV on 20.8 GB mmap. STOCK expected arch-reject again (38 MB peak proof) ??? kept as 10 s control. |
+| Laguna-XS-2.1 Q4_K_M | 18.88 | 1024 | t8 | p128/n32 STOCK+MOD | n=32 STOCK+MOD | 1800 s | Never passed load (peaks 2.8/0.7 GB, zero bytes incl. banner) ??? stall is in load/init, not tok/s; t8 middle ground, ctx1024 minimal KV while testing whether 1800 s unblocks init. |
+| Nemotron-30B-A3B Q4_K_M | 23.53 | 1024 | t6 | p128/n32 STOCK+MOD | n=32 STOCK+MOD | 1800 s | Biggest file; STOCK peak 12.2 GB shows partial load furthest ??? closest to working. t6 reduces memory-bandwidth contention during 23.5 GB mmap + KV; ctx1024 floor. |
+| 01 gemma-4-26B Q4_K_M | 15.78 | 2048 | t10 | p128/n32 STOCK+MOD | n=32 STOCK+MOD | 1800 s | Peaks 10.6/17.0 GB fit 32 GB RAM; Q3 sibling completed at ctx2048 regime (MOD pp 3.06/tg 2.25). Keep ctx2048 + full t10 ??? this one most likely just needs the longer guard. |
+| Ornith-35B-A3B Q3_K_M | 15.55 | 2048 | t8 | p128/n32 STOCK+MOD | n=32 STOCK+MOD | 1800 s | Peaks 14.8/12.3 GB (same TIGHT regime as proven runs). t8 (not t10) to ease paging pressure vs the 300 s runs; ctx2048 matches prior attempt so guard time is the only variable. |
+| Bonsai PQ2_0 / PTQ1_0 | 6.71 / 5.54 | 512 | t8 | none (no bench binary for PRISM) | quality-only n=32, prism `llama-cli`, ctx512 | 1800 s | PRISM peaks 6.9/5.8 GB at ctx512 with zero bytes incl. banner ??? init-stall suspect (Hadamard unpack). Do NOT raise ctx until a banner appears; quality-only; try `ctx 256 + verbose` variant if 512 still silent. |
+
+Threading note: day-bench used `-t 10` on 6C/12T. Overnight drops to t6/t8 on the biggest files purely for host-responsiveness (proven starve on MoVA-MOD), not for speed ??? fewer threads will be slower per-token but less likely to wedge the machine.
+
+
+===== OVERNIGHT_HOST.out.txt =====
+2026-09-23 04:15:34 QUEUE size=7
+2026-09-23 04:15:34 START A Ternary-Bonsai-2-27B-PQ2_0.gguf PRISM quality n=96 ctx512 t12 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\19-ternary-bonsai-27b\PRISM-OVERNIGHT
+2026-09-23 04:15:34 RAM [pre-A Ternary-Bonsai-2-27B-PQ2_0.gguf PRISM quality n=96 ctx512 t12]: free 13.04 GB / total 31.39 GB
+2026-09-23 04:29:18 DONE A Ternary-Bonsai-2-27B-PQ2_0.gguf PRISM quality n=96 ctx512 t12 wall=823.5s peak=7098MB exit=
+2026-09-23 04:29:18 RAM [post-A Ternary-Bonsai-2-27B-PQ2_0.gguf PRISM quality n=96 ctx512 t12]: free 12.56 GB / total 31.39 GB
+2026-09-23 04:29:18 PAUSE 60s (cooldown + owner-usability)
+2026-09-23 04:30:18 RAM [between-runs]: free 12.56 GB / total 31.39 GB
+2026-09-23 04:30:18 START B Ternary-Bonsai-2-27B-PTQ1_0.gguf PRISM quality n=96 ctx512 t12 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\19-ternary-bonsai-27b\PRISM-OVERNIGHT
+2026-09-23 04:30:18 RAM [pre-B Ternary-Bonsai-2-27B-PTQ1_0.gguf PRISM quality n=96 ctx512 t12]: free 12.56 GB / total 31.39 GB
+2026-09-23 05:00:20 GUARD-FIRE B Ternary-Bonsai-2-27B-PTQ1_0.gguf PRISM quality n=96 ctx512 t12 hit 1800s - killing pid 25616 + stray procs
+2026-09-23 05:00:21 TIMEOUT B Ternary-Bonsai-2-27B-PTQ1_0.gguf PRISM quality n=96 ctx512 t12 wall=1802.7s peak=5954MB exit=
+2026-09-23 05:00:21 RAM [post-B Ternary-Bonsai-2-27B-PTQ1_0.gguf PRISM quality n=96 ctx512 t12]: free 7.93 GB / total 31.39 GB
+2026-09-23 05:00:21 PAUSE 60s (cooldown + owner-usability)
+2026-09-23 05:01:21 RAM [between-runs]: free 12.57 GB / total 31.39 GB
+2026-09-23 05:01:21 START C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD bench p128/n32 t10 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\01-moe-26b-a4b_gemma4-unsloth\MOD-OVERNIGHT
+2026-09-23 05:01:21 RAM [pre-C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD bench p128/n32 t10]: free 12.57 GB / total 31.39 GB
+2026-09-23 05:09:23 DONE C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD bench p128/n32 t10 wall=481.2s peak=15722MB exit=
+2026-09-23 05:09:23 RAM [post-C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD bench p128/n32 t10]: free 16.72 GB / total 31.39 GB
+2026-09-23 05:09:53 START C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD quality n=96 ctx2048 t10 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\01-moe-26b-a4b_gemma4-unsloth\MOD-OVERNIGHT
+2026-09-23 05:09:53 RAM [pre-C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD quality n=96 ctx2048 t10]: free 16.68 GB / total 31.39 GB
+2026-09-23 05:14:20 DONE C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD quality n=96 ctx2048 t10 wall=265.7s peak=18612MB exit=
+2026-09-23 05:14:20 RAM [post-C gemma-4-26B-A4B-it-UD-Q4_K_M.gguf MOD quality n=96 ctx2048 t10]: free 17.8 GB / total 31.39 GB
+2026-09-23 05:14:20 PAUSE 60s (cooldown + owner-usability)
+2026-09-23 05:15:21 RAM [between-runs]: free 17.79 GB / total 31.39 GB
+2026-09-23 05:15:21 START D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD bench p128/n32 t8 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\ornith-35b-a3b\MOD-OVERNIGHT
+2026-09-23 05:15:21 RAM [pre-D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD bench p128/n32 t8]: free 17.79 GB / total 31.39 GB
+2026-09-23 05:18:24 DONE D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD bench p128/n32 t8 wall=183.6s peak=13719MB exit=
+2026-09-23 05:18:25 RAM [post-D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD bench p128/n32 t8]: free 17.48 GB / total 31.39 GB
+2026-09-23 05:18:55 START D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD quality n=96 ctx2048 t8 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\ornith-35b-a3b\MOD-OVERNIGHT
+2026-09-23 05:18:55 RAM [pre-D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD quality n=96 ctx2048 t8]: free 17.55 GB / total 31.39 GB
+2026-09-23 05:21:41 DONE D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD quality n=96 ctx2048 t8 wall=165.4s peak=18598MB exit=
+2026-09-23 05:21:41 RAM [post-D Ornith-1.5-35B-A3B-Q3_K_M.gguf MOD quality n=96 ctx2048 t8]: free 18.52 GB / total 31.39 GB
+2026-09-23 05:21:41 PAUSE 60s (cooldown + owner-usability)
+2026-09-23 05:22:41 RAM [between-runs]: free 18.45 GB / total 31.39 GB
+2026-09-23 05:22:41 START E NVIDIA-Nemotron-3.5-Lightning-30B-A3B-UD-Q4_K_M.gguf MOD bench p128/n32 t6 -> F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\00-CPU-BENCH-MASTER\results_fresh\nemotron-30b-a3b\MOD-OVERNIGHT
+2026-09-23 05:22:41 RAM [pre-E NVIDIA-Nemotron-3.5-Lightning-30B-A3B-UD-Q4_K_M.gguf MOD bench p128/n32 t6]: free 18.45 GB / total 31.39 GB
+
+
+===== BENCH_PROTOCOL_CPU_ONLY.md =====
+# BENCH PROTOCOL ??? CPU-only (DRAFT, freeze before runs)
+
+Engine builds: CPU-only, no CUDA/Vulkan, `-ngl 0`. Record: commit/tag, cmake flags, threads used (suggest: 10-11 of 12 to leave OS headroom on 5600G), compiler.
+Env: Ryzen 5 5600G, 32GB DDR4-2400, Windows, GTX 1650 disabled for runs. Close browsers. Log free RAM before each run.
+
+Per run record:
+- model file + size + sha256 (first 16)
+- engine (original vs abelianIUT) + binary path + version
+- ctx (start 4096, 32768 only if RAM allows ??? Bonsai claims 262K but do NOT attempt on 32GB CPU)
+- threads, batch, ubatch, flash-attn on/off, seed fixed
+- pp t/s (prompt eval), tg t/s (gen), TTFT, wall time, RAM peak (Task Manager / ps)
+- output full text saved under results_fresh/<model>/<engine>/
+
+Prompt set (same for every model, decent + measurable):
+1. Identity/instruction-follow (short)
+2. Trading pipeline explain (domain)
+3. Audit/risk answer (domain)
+4. Grid math (deterministic check)
+5. MQL5 setfile/tool-call JSON (strict format check ??? pass/fail)
+6. Metrics JSON extract (strict)
+7. Hallucination trap (must refuse or hedge)
+8. Subagent probe: "Can you use subagents? If yes, explain how you would delegate 3 parallel research tasks and what output format you'd demand." ??? score: asks clarifying? confirms capability? gives delegation schema? (extra points per user)
+
+Scoring: speed 40%, correctness/format 40%, subagent-readiness 20%. Fail = crash/OOM/garbage/timeout. Fail goes to fix queue (dedicate time per model, move fast).
+
+Fit rules for 32GB:
+- FITS (<10GB file): full protocol
+- TIGHT (10-17GB): Q3/smaller quant first, ctx 2048-4096, monitor RAM
+- SKIP/SMOKE (>18GB: MoVA-36B 20.8GB, Nemotron 23.5GB, Laguna 18.9GB, Ornith 19.4GB): single tiny-ctx smoke only, mark OOM-risk, do not block matrix.
+
+
+===== BUILD_VERSIONS.md =====
+# CPU-only Build Versions (STOCK vs MOD)
+
+Date (build day, local UTC-6): 2026-09-20
+- STOCK build: 22:54 -> 23:01 (EXIT 0)
+- MOD build: 23:03 -> 23:09 (EXIT 0, single diagnosed retry ??? see blocker note)
+- Toolchain selector: `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\Tools\VsDevCmd.bat -arch=x64 -host_arch=x64`
+  (VS 18 path exists; 17/16 fallback NOT needed)
+- Compiler: MSVC 19.50.35730.0 for x64, CMake 4.3.2, generator `Visual Studio 18 2026`, Windows SDK 10.0.26100.0
+- Build parallelism: `-j 10` (Ryzen 5 5600G 6C/12T, 2 threads left for OS)
+- Smoke tests only (`--version`, `--help`). No inference benchmarks were run.
+
+## STOCK (upstream llama.cpp)
+
+- Source: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-original`
+- Git: `ce8caa6e60a03093351d6016a818720e0d46f0fb` (b11065, `CUDA: tune FA for Gemma 4 on Ampere or newer (#29152)`)
+- `llama-cli.exe --version`: `version: 0.4.1-dev (build 11065, commit ce8caa6e6)`, `built with MSVC 19.50.35730.0 for x64`
+- `llama-bench.exe --help` (first lines): `usage: ...llama-bench.exe [options] / options: -h, --help / --version show version and build info`
+- Binaries: `.../llama.cpp-original/build_cpu_original/bin/Release/` (`llama-cli.exe`, `llama-bench.exe`, `llama-server.exe`, ???)
+- Log: `.../00-CPU-BENCH-MASTER/logs/build_stock_cpu_2026-09-20.log` (UTF-16 via Tee-Object)
+
+## MOD (AtomicChat turboquant fork, no .git)
+
+- Source: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-abelianIUT`
+- `llama-cli.exe --version`: `version: 0 (unknown)`, `built with MSVC 19.50.35730.0 for x64`
+  (`unknown` expected: no `.git`, CMake reports `ggml commit: unknown`; `--version` prints no TQ string)
+- TQ evidence instead: build log compiles `ggml-turbo-quant.c`; fork adds `src/daavfx_*` sources
+- ggml version per configure: `0.9.11`; CPU backend variant: `/arch:AVX2 GGML_AVX2;GGML_FMA;GGML_F16C`
+- Binaries: `.../llama.cpp-abelianIUT/build_cpu_mod/bin/Release/` (`llama-cli.exe`, `llama-bench.exe`, `llama-server.exe` present, ???)
+- Pre-existing reference dir `build/` (CPU, /arch:AVX2) left untouched
+- Log: `.../00-CPU-BENCH-MASTER/logs/build_mod_cpu_2026-09-20.log` (UTF-16 via Tee-Object; first attempt EXIT 1 + retry EXIT 0 ??? last-80 of failure in section below)
+
+## CMake flags (both)
+
+- Common: `-DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DGGML_NATIVE=ON -DGGML_BLAS=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON`
+- STOCK: `-B build_cpu_original -S .` + `cmake --build build_cpu_original --config Release -j 10`
+- MOD: `-B build_cpu_mod -S .` + same `--build`, PLUS one extra define (blocker fix):
+  `-DCMAKE_ASM_COMPILER=C:/Program Files (x86)/Microsoft Visual Studio/18/BuildTools/VC/Tools/MSVC/14.50.35717/bin/Hostx64/x64/ml64.exe`
+
+## Blocker encountered (MOD, resolved within 1 retry ??? no blind retries)
+
+- First MOD configure failed EXIT 1, last lines:
+  `-- The ASM compiler identification is unknown / -- Didn't find assembler / CMake Error at ggml/CMakeLists.txt:9 (project): No CMAKE_ASM_COMPILER could be found.`
+- Root cause (diagnosed, not guessed): the fork's `ggml/CMakeLists.txt` sets `CMP0194 NEW`
+  (`MSVC is not a valid assembler for ASM`), so CMake 4.3 rejects the stock fallback (cl.exe as assembler)
+  and searches for MASM; auto-detection under the `Visual Studio 18 2026` generator finds nothing
+  (ml64.exe exists but is not auto-detected). STOCK configures fine because it leaves the policy unset.
+- Fix: explicit `-DCMAKE_ASM_COMPILER=.../ml64.exe` (no source modified). Retry then configured
+  (`Found assembler: .../ml64.exe`) and built clean EXIT 0.
+
+## CPU-only confirmation
+
+- `GGML_CUDA=OFF`, `GGML_VULKAN=OFF`, `GGML_BLAS=OFF` ??? no GPU backends compiled in either tree.
+- GTX 1650 ignored as instructed. All benchmark runs must use `-ngl 0` (CPU only).
+
+
+===== DOWNLOAD_MANIFEST.md =====
+# CPU BENCH ??? DOWNLOAD MANIFEST
+
+Date: 2026-09-20 (America/Chicago)
+Agent: DOWNLOAD (CPU-only LLM benchmark, prep phase ??? no inference/benchmark runs)
+Machine target: Ryzen 5600G 6C/12T, 32 GB DDR4, GTX 1650 IGNORED (CPU-only)
+
+## Tools (verified)
+
+- `hf.exe` 1.31.0 via hermes venv (`huggingface_hub` 1.31.0). NOTE: legacy
+  `huggingface-cli` entry point is deprecated and prints "Use `hf` instead" ???
+  all downloads used `hf download`.
+- `git` 2.54.0.windows.1 ??? OK.
+- `python` 3.11.16 via `...\hermes-agent\venv\Scripts\python.exe` ??? OK.
+  (System `...\Python313\` install is incomplete: only 5 files, no Lib/Scripts,
+  `import encodings` fails. No `pip` in hermes venv either.)
+- Fast transfer: `hf_transfer` module NOT installed and `HF_HUB_ENABLE_HF_TRANSFER`
+  is deprecated upstream (hub suggests `HF_XET_HIGH_PERFORMANCE` instead).
+  Downloads used standard transfer ??? slower but complete. Non-blocking.
+- Auth: `$env:HF_TOKEN` only (never written to any file/log ??? both logs
+  verified token-free via Select-String).
+
+## 18-k2-horizon-7b-uno ??? ADAPTER-ONLY, NO GGUF (BLOCKER, see below)
+
+Repo: https://huggingface.co/IFM/K2-Horizon-7B-Uno ??? commit 669f041aab04fad836e757ede9a028058b064996
+Tags: peft, safetensors, lora, diffusion-language-model, conditional-lora, uno,
+  base_model:IFM/K2-Horizon-7B, license:apache-2.0
+Target dir: `...\llm-collection\18-k2-horizon-7b-uno\`
+
+| File | Bytes | GB | sha256-prefix (16) | Source |
+|---|---|---|---|---|
+| adapter_model.safetensors | 1,396,763,616 | 1.30 GiB | CFEF2BBFF2802F2F | HF IFM/K2-Horizon-7B-Uno |
+| README.md | 21,560 | ??? | 45A9508A38D23F70 | same |
+| results_overview.png | 215,640 | ??? | B3791587E7D6E8CC | same |
+| adapter_config.json | 521 | ??? | 18B2FB757CCAC99D | same |
+| source_info.json | 2,613 | ??? | 83032AF5F9B32795 | same |
+| conversion_summary.json | 2,613 | ??? | 83032AF5F9B32795 | same |
+| .gitattributes | 1,576 | ??? | 25A2471C209B1E57 | same |
+| CONVERSION_COMPLETE | 3 | ??? | DC51B8C96C2D745D | same |
+
+Adapter facts (adapter_config.json + source_info.json): LoRA r=128, alpha=8192,
+dropout 0.05, targets q/k/v/o + gate/down/up, 504 tensors fp32, lossless-exact
+compare true, base `IFM/K2-Horizon-7B`, ckpt_0000597.
+Base model `IFM/K2-Horizon-7B`: 50 files, 36?? safetensors shards, custom
+`modeling_k2_horizon.py`, NO GGUF. Quant derivatives of Uno on Hub: ONLY
+`mlx-community/K2-Horizon-7B-Uno-oQ6e` + `hermitdave/K2-Horizon-7B-Uno-oQ4e`
+(Apple-MLX format, unusable on Windows). **No GGUF quant exists anywhere.**
+
+Fit-note (32 GB CPU-only): NOT BENCHABLE with llama.cpp. Needs special
+uno-code (github.com/ifm-ai/uno) + base weights + merge/runtime path.
+Record-only download; EXCLUDE from llama.cpp CPU bench matrix.
+Log: `00-CPU-BENCH-MASTER\logs\dl_uno_20260920.log`
+
+## 19-ternary-bonsai-27b ??? DOWNLOADED (both quants)
+
+Repo: https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf ??? commit 6ed5e12bf84b7a63069882c91dd9e9218647d17b
+Target dir: `...\llm-collection\19-ternary-bonsai-27b\`
+Skipped deliberately: `Ternary-Bonsai-2-27B-F16.gguf` (~50 GB+, not CPU-relevant),
+mmproj files, README/LICENSE/NOTICE/assets.
+
+| File | Bytes | GB (decimal) | GiB | sha256-prefix (16) | Source |
+|---|---|---|---|---|---|
+| Ternary-Bonsai-2-27B-PQ2_0.gguf | 7,206,168,928 | 7.21 | 6.71 | 3907DC1658DB1F78 | HF prism-ml/Ternary-Bonsai-2-27B-gguf |
+| Ternary-Bonsai-2-27B-PTQ1_0.gguf | 5,946,648,928 | 5.95 | 5.54 | 53107F530AA52EB0 | same |
+
+Fit-note (32 GB CPU-only): weights fit comfortably (7.21 GB PRIORITY + 5.95 GB
+alt = 13.15 GB on disk; resident per-run ??? weights + KV/compute buffers, well
+under 32 GB). **FORK REQUIREMENT (BLOCKER for stock runs): these are NOT stock
+llama.cpp models ??? they need the PrismML-Eng/llama.cpp fork (PQ2_0/PTQ1_0 +
+Hadamard handling). Do NOT test with stock build; fork build is a separate
+task.** No inference attempted (per constraints).
+Log: `00-CPU-BENCH-MASTER\logs\dl_bonsai_20260920.log`
+
+## Stock llama.cpp source (prep only, NOT built)
+
+- Location: `...\shared\llama.cpp-original\` (fresh `git clone`)
+- Remote: https://github.com/ggerganov/llama.cpp.git
+- Commit: ce8caa6e60a03093351d6016a818720e0d46f0fb (2026-09-20,
+  "CUDA: tune FA for Gemma 4 on Ampere or newer (#29152)"), describe: b11065
+- Version record: `00-CPU-BENCH-MASTER\downloads\stock_llamacpp_version.txt`
+- Build docs present (not executed): README.md, CMakeLists.txt (CMake build),
+  `docs/` (build-*.md), AGENTS.md/CLAUDE.md. No `build.sh`.
+
+## FAILED / deferred
+
+1. Uno GGUF Q4_K_M ??? FAILED (nothing to download): repo is LoRA-adapter-only,
+   no GGUF in repo, none in base model, only Apple-MLX quants elsewhere.
+   Resolution needs uno-code path (github.com/ifm-ai/uno), out of scope for
+   llama.cpp bench. Record files kept for provenance.
+2. `pip install -U huggingface_hub hf_transfer` ??? DEFERRED: no usable pip
+   (system Python broken, hermes venv has no pip module exposed); `hf` 1.31.0
+   already present and sufficient. `HF_HUB_ENABLE_HF_TRANSFER=1` set but inert
+   (module absent + env deprecated upstream). No impact on completeness.
+3. Bonsai inference test ??? SKIPPED per constraints + fork requirement noted above.
+4. llama.cpp build ??? SKIPPED per constraints (prep phase only).
+
+## Blockers summary
+
+- Uno has no GGUF and cannot enter the llama.cpp CPU bench; needs uno-code track.
+- Bonsai PQ2_0/PTQ1_0 MUST be run with the PrismML-Eng/llama.cpp fork, never stock.
+- No other blockers. Disk F: ~1.6 TB free before downloads; ~13.2 GB + ~1.4 GB added.
+
+
+===== AUDIT_build_and_fit_2026-09-21.md =====
+# AUDIT ??? build system + GGUF fit (agent #2, no inference runs)
+Date: 2026-09-21 | Machine: AMD Ryzen 5 5600G 6C/12T, 32GB DDR4, GTX 1650 IGNORED | Shell: Win PS 5.1
+MOD: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-abelianIUT`
+MASTER: `...???\GGUF\llm-collection\00-CPU-BENCH-MASTER` (README/TRACKING/PROTOCOL read first ??? this audit follows them)
+
+## 1. Build-system audit (mod)
+
+### 1.1 build*/ dirs (dates = LastWriteTime of dir) + binaries at top level of each dir
+| dir | date | GGML flags (CMakeCache, where present) | llama-cli.exe | llama-server.exe | llama-bench.exe | notes |
+|---|---|---|---|---|---|---|
+| build | 06/09/2026 | CUDA=OFF, VULKAN=OFF, NATIVE=ON, LLAMAFILE=ON, BLAS=OFF; generator Visual Studio 18 2026 | YES 68.3MB 27/07/2026 | YES 14.6MB 06/09/2026 | YES 65.4MB 27/07/2026 | **Reference CPU build.** Full exe set (~90 exes). Server rebuilt 06/09 (newer than cli) ??? rebuild both together next time |
+| build_cuda | 30/08/2026 | CUDA=ON | YES 2.7MB 30/08 (stub) | YES 10.1MB 30/08 | YES 0.7MB 30/08 | CUDA attempt; most exes ~0???2MB stubs. DO NOT USE for CPU bench |
+| build_noprov | 29/07/2026 | (provenance test) | NO | NO | YES 0.6MB | bench only |
+| build_prov | 29/07/2026 | (provenance test) | NO | NO | YES 0.6MB | partial stubs only |
+| build_vk_debug | 12/09/2026 | ??? | NO | NO | NO | no exes at top level |
+| build_vulkan | 16/09/2026 | (Vulkan) | YES 2.7MB 03/09 | YES 10.1MB 16/09 | YES 0.7MB 16/09 | Vulkan bench line; bench+server rebuilt 16/09 |
+| build_vulkan_ninja | 27/08/2026 | (Vulkan,Ninja) | YES 2.7MB 26/08 | NO | YES 0.6MB 26/08 | partial |
+| build_vulkan_ninja_static | 26/07/2026 | ??? | NO | NO | NO | no exes at top level |
+| build_vulkan_on | 12/09/2026 | (Vulkan) | NO | YES 10.1MB 12/09 | YES 0.7MB 13/09 | partial |
+| bin/ (mod root) | ??? | ??? | NO | NO | NO | scripts + CSVs only (bench_runner.ps1, summary.ps1, test_capture.ps1) |
+
+Finding: NO existing `build_cpu*` dir. No stock clone: `shared\llama.cpp-original` does NOT exist (Test-Path=False).
+
+### 1.2 Scripts read
+- `build_worktree.ps1` ??? wrapper: calls `build_worktree.cmd` via `cmd /c`, merges stderr into log, verifies `build\bin\Release\llama-server.exe` + SHA256. NOTE: hardcoded `$Worktree = ...\u_studio\llama.cpp-atomic-daavfx` (stale path, not the mod dir).
+- `build_worktree.cmd` ??? VsDevCmd (VS18 BuildTools, `-arch=x64`), explicit `CMAKE_ASM_COMPILER=<...MSVC 14.50.35717...ml64.exe>`, `cmake -B build -DLLAMA_BUILD_TESTS=ON -DLLAMA_BUILD_EXAMPLES=ON` (CUDA/VULKAN untouched = defaults OFF/OFF), `cmake --build build --config Release`. I.e. **implicit CPU-only via defaults**. For the frozen CPU protocol prefer EXPLICIT `-DGGML_CUDA=OFF -DGGML_VULKAN=OFF` (see ??1.6).
+- `run_benchmarks.ps1` / `run_benchmarks.bat` ??? OLD Vulkan/GPU matrix (`-ngl 99`, `-sm row`, HETERO splits, `GGML_VK_SCALAR_MUL_MAT_ID`). UNTRUSTED for CPU protocol; do not reuse. Also reference stale paths (`llama.cpp-atomic`, root-level `Qwen2.5-1.5B` gguf that no longer exists).
+- `bin\bench_runner.ps1` ??? OLD matrix (CPU/GPU/HETERO ?? 3 pp/tg patterns), references `llama.cpp-atomic\build_vulkan_ninja\bin\llama-bench.exe` and `04-dense-2b_qwen3.5-unsloth\` (folder does not exist in collection). UNTRUSTED; do not reuse.
+
+### 1.3 CMakePresets.json ??? which presets are CPU-only?
+None of the presets say "cpu" by name. CPU-only = any preset that does NOT inherit `vulkan` or `sycl-base`:
+- CPU-only (implicit, by absence of GPU flags): `x64-windows-msvc-debug`, `x64-windows-msvc-release` (=reldbg), `x64-windows-msvc+static-release`, all `x64-linux-gcc-*`, `x64-windows-llvm-*`, `arm64-*` (wrong arch here).
+- GPU (EXCLUDED for this protocol): `x64-windows-vulkan-*` (inherit `vulkan` ??? GGML_VULKAN=ON), all `x64-windows-sycl-*` (inherit `sycl-base`).
+- Recommendation: DON'T use presets for the frozen build ??? pass explicit `-D` flags (??1.6) so both engines get byte-identical option sets. Presets also force `Ninja` generator, which is NOT on PATH (see ??1.4).
+
+### 1.4 Compilers available
+| tool | result |
+|---|---|
+| `cmake --version` | 4.3.2 (`C:\Program Files\CMake\bin\cmake.exe`) |
+| `ninja --version` | NOT FOUND on PATH |
+| `gcc --version` | NOT FOUND on PATH |
+| `cl` | NOT FOUND on bare PATH (expected ??? needs VsDevCmd) |
+| VS installs | `C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools` (MSVC 14.50.35717, VsDevCmd.bat present) + `C:\Program Files\Microsoft Visual Studio\2022\Community` |
+All builds must activate VsDevCmd first (as `build_worktree.cmd` does). Proven working generator: `Visual Studio 18 2026` (see `build/CMakeCache.txt: CMAKE_GENERATOR:INTERNAL=Visual Studio 18 2026`).
+
+### 1.5 CPU flags ??? Ryzen 5 5600G (Zen 3: AVX2+FMA+F16C, no AVX512) vs ggml CMake
+- `ggml/src/ggml-cpu/cmake/FindSIMD.cmake`: on MSVC probes `/arch:AVX`, `/arch:AVX2` (AVX2+FMA), `/arch:AVX512`; sets `GGML_AVX2 ON` only if compile-run probes pass.
+- `ggml/CMakeLists.txt`: `GGML_NATIVE` defaults ON (unless cross-compiling); when `GGML_NATIVE=ON`, explicit ISA toggles default OFF (`INS_ENB=OFF`) and native detection drives flags. `GGML_AVX2`/`FMA`/`F16C` options exist (default `${INS_ENB}`), `GGML_AVX512*` default OFF (correct for 5600G).
+- PROOF from existing `build/`: `CMakeCache` shows `GGML_NATIVE=ON, CUDA=OFF, VULKAN=OFF, BLAS=OFF, LLAMAFILE=ON` and the compile log (`build/ggml/src/ggml-cpu.dir/Release/ggml-cpu.tlog/CL.command.1.tlog`) shows `/arch:AVX2` + `-DGGML_AVX2 -DGGML_FMA -DGGML_F16C` on every TU. So `GGML_NATIVE=ON` already yields the right AVX2 build on this CPU. (`GGML_AVX2:BOOL=OFF` in the cache is the explicit-override slot, NOT the effective state ??? do not "fix" it by forcing `=ON`, which fights the NATIVE logic.)
+- Keep: `GGML_AVX512*=OFF`, `GGML_AMX_*=OFF` (defaults). No `/arch:AVX512` anywhere.
+
+### 1.6 PROPOSED CPU-only build commands (copy-paste ready, NOT executed ??? per task order)
+Run in `cmd.exe` (or PS with `cmd /c`), since VsDevCmd needs a batch context. GTX 1650 ignored: no CUDA/Vulkan flags anywhere.
+
+**A. MOD engine ??? `build_cpu_mod`:**
+```cmd
+call "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
+cd /d F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-abelianIUT
+cmake -B build_cpu_mod -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DGGML_NATIVE=ON -DGGML_BLAS=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON
+cmake --build build_cpu_mod --config Release
+.\build_cpu_mod\bin\Release\llama-bench.exe --version
+.\build_cpu_mod\bin\Release\llama-cli.exe --version
+```
+(No `-G` ??? proven `Visual Studio 18 2026` generator; binaries land in `build_cpu_mod\bin\Release\`. `CMAKE_BUILD_TYPE` intentionally omitted ??? multi-config VS generator uses `--config Release`.)
+
+**B. STOCK engine ??? `build_cpu_original` (after download agent creates the clone):**
+```cmd
+:: one-time clone (example tag ??? download agent to pin/freeze actual commit):
+git clone https://github.com/ggml-org/llama.cpp.git F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-original
+call "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64
+cd /d F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-original
+cmake -B build_cpu_original -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DGGML_NATIVE=ON -DGGML_BLAS=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON
+cmake --build build_cpu_original --config Release
+.\build_cpu_original\bin\Release\llama-bench.exe --version
+.\build_cpu_original\bin\Release\llama-cli.exe --version
+```
+Same flags as MOD ??? fair fight. Record commit hash + full `CMakeCache.txt` diff per protocol. Dry `cmake -S/-B` configure check NOT run (slow dir, and task says write commands only).
+
+## 2. GGUF inventory + fit (32GB RAM, CPU-only `-ngl 0`; classes: FITS <10GB / TIGHT 10???17GB / SMOKE-ONLY >18GB per FILE)
+
+Measured 2026-09-21 with `Get-ChildItem` (1GB=1024??). README deltas marked with ???.
+
+| # | folder | file(s) on disk | size GB | class | verdict |
+|---|---|---|---|---|---|
+| 01 | 01-moe-26b-a4b_gemma4-unsloth | gemma-4-26B-A4B-it-UD-Q3_K_M.gguf | 11.854 | TIGHT | test Q3 first, ctx 2048???4096 |
+| 01 | (same, folder total 27.638) | gemma-4-26B-A4B-it-UD-Q4_K_M.gguf | 15.784 | TIGHT | Q4 after Q3 passes only |
+| 05 | 05-dense-4b_gemma4-e4b-unsloth (8.415) | gemma-4-E4B-it-Q3_K_M.gguf | 3.779 | FITS | full protocol |
+| 05 | | gemma-4-E4B-it-Q4_K_M.gguf | 4.635 | FITS | full protocol |
+| 09 | 09-LFM2.5-8B-A1B (4.801) | LFM2.5-8B-A1B-Q4_K_M.gguf | 4.801 | FITS | full protocol |
+| 15 | 15-qwen3.5-2b4b (9.938 ??? incl. .bak dupes) | qwen3.5-2b-q4km.gguf | 1.812 | FITS | full protocol |
+| 15 | | qwen3.5-4b-q4km.gguf | 3.157 | FITS | full protocol |
+| 16 | 16-k2-horizon-7b (5.208) | K2-Horizon-7B-Q4_K_M.gguf | 5.208 | FITS | full protocol |
+| 17 | 17-k2-horizon-mova-36b-a4b (20.832) | K2-Horizon-MoVA-36B-A4B-Q4_K_M.gguf | 20.832 | SMOKE-ONLY | tiny-ctx smoke only, OOM-risk |
+| 18 | 18-k2-horizon-7b-uno (1.301, NEW folder) | adapter_model.safetensors (+adapter_config.json, no GGUF) | 1.301 | N/A | ??? NOT RUNNABLE in llama.cpp ??? LoRA adapter only, needs base+conversion. Awaits download agent |
+| 19 | 19-ternary-bonsai-27b (NEW folder) | EMPTY | ??? | N/A | ??? nothing downloaded yet. Awaits download agent (want PQ2_0 first) |
+| lag | laguna-xs-2.1 (18.882) | Laguna-XS-2.1-Q4_K_M.gguf | 18.882 | SMOKE-ONLY | tiny-ctx smoke only (18.88 > 18 threshold) |
+| dsp | lfm2.5-8b-a1b-dspark (0.610 ???, was "1.05GB/15 files") | model.safetensors (+config/README/logs, 7 files, NO gguf) | 0.610 | N/A | ??? NOT RUNNABLE ??? safetensors, needs `convert_hf_to_gguf.py`. Not 15 files anymore / 1.05GB figure stale |
+| nem | nemotron-30b-a3b (23.531 ???, was 23.77) | NVIDIA-Nemotron-3.5-Lightning-30B-A3B-UD-Q4_K_M.gguf | 23.531 | SMOKE-ONLY | tiny-ctx smoke only or SKIP |
+| orn | ornith-35b-a3b (15.550 ???, was 19.41) | Ornith-1.5-35B-A3B-Q3_K_M.gguf | 15.550 | TIGHT | ??? README stale: only Q3_K_M on disk, no Q4. Testable with small ctx ??? promote from smoke-or-skip to TIGHT |
+| q38 | qwen3.8-flash-next (0.012 ???, was 0.01) | NO gguf ??? tokenizer.json 12.2MB + config/jinja (5 files) | 0.012 | N/A | ??? NO model file. Awaits download agent |
+| spk | spark-x2.5-4b (2.422) | Spark-X2.5-4B-Q4_K_M.gguf | 2.422 | FITS | full protocol |
+| RYI | RYIUK_models | EMPTY | ??? | N/A | empty, as README says |
+
+Fit summary counts: FITS files = 7 (05??2, 09, 15??2 unique, 16, spark) | TIGHT files = 3 (01-Q3, 01-Q4, ornith-Q3) | SMOKE-ONLY = 3 (17-MoVA, laguna, nemotron) | NO-GGUF (action needed) = 4 slots (18-uno adapter, 19-bonsai empty, dspark safetensors, qwen3.8 tokenizer-only).
+
+### Smoke-only list (final)
+- `17-k2-horizon-mova-36b-a4b/K2-Horizon-MoVA-36B-A4B-Q4_K_M.gguf` 20.832GB
+- `laguna-xs-2.1/Laguna-XS-2.1-Q4_K_M.gguf` 18.882GB
+- `nemotron-30b-a3b/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-UD-Q4_K_M.gguf` 23.531GB
+Single tiny-ctx smoke each (e.g. `-c 512 --prompt ... -n 32`), monitor RAM, do not block matrix.
+
+## 3. Disk space
+F: free **1487.01 GB** / total 2794.5 GB. Collection ??? 141 GB + 2 pending downloads (Uno-derivative TBD, Bonsai PQ2_0 ~7.2GB) + ~10???15GB per fresh `build_cpu_*` dir ??? no space pressure.
+
+## 4. Next-step fix queue (template for bench phase)
+| # | item | owner | status |
+|---|---|---|---|
+| 1 | Download agent: resolve+pull A (K2-Uno runnable GGUF?) + B (Bonsai PQ2_0) w/ SHA+size ??? logs/ | dl-agent | open |
+| 2 | Download agent: clone stock llama.cpp ??? `shared\llama.cpp-original`, pin commit | dl-agent | open |
+| 3 | Build `build_cpu_mod` (??1.6-A) + record version/flags | build | open |
+| 4 | Build `build_cpu_original` (??1.6-B) + record version/flags | build | open |
+| 5 | Convert dspark safetensors ??? GGUF (or mark out-of-scope) | TBD | open |
+| 6 | Clean `15-qwen3.5-2b4b/*.bak` dupes (4.97GB waste) ??? confirm identical hash first | TBD | open |
+| 7 | Update README sizes: ornith 15.55, nemotron 23.53, dspark 0.61/7-files, +folders 18/19 | TBD | open |
+| 8 | Smoke FITS set on mod CPU build, record fail list | bench | blocked on 3 |
+| 9 | Smoke FITS set on stock CPU build | bench | blocked on 4 |
+| 10 | Bonsai engine verdict (mod? stock? prism-fork CPU build?) | bench | blocked on 1 |
+
+*No inference runs performed. No full builds executed (per task order).*
+
+
+===== AUDIT_structure_2026-09-21.md =====
+# AUDIT #1 ??? structure + compat ??? llama.cpp-abelianIUT (Windows, read-only, no builds, no inference)
+
+Date: 2026-09-21 | Auditor: AUDIT agent #1 | Machine target: Ryzen 5 5600G, 32 GB RAM, CPU-only `-ngl 0`
+Mod dir: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-abelianIUT`
+NOT a git repo (no `.git`); `AGENTS.md` empty; `CLAUDE.md` = 1-line pointer to AGENTS.md.
+
+> All prior numbers in this dir are **UNTRUSTED** ??? do not reuse. Failure patterns only.
+
+## 1. Fork identity guess
+
+- `README.md` line 1: `# Atomic llama.cpp` (banner: `AtomicBot-ai`). This is the **AtomicChat `atomic-llama-cpp-turboquant`** fork (TurboQuant work credited to `TheTom/llama-cpp-turboquant`, README ??"TurboQuant ??? KV cache & weight compression").
+- Fork specialties (README Hot topics + `MTP.md` + `NEXTN.md` + `docs/speculative.md` + `docs/qwen-udt/RUNBOOK.md`): **Gemma 4 MTP** speculative decoding (`--mtp-head`, assistant heads `gemma4_assistant`), **Qwen 3.6 NextN** (`--spec-type nextn`, combined `*_MTP.gguf`), **TurboQuant KV** (`-ctk turbo3 -ctv turbo3`) + weight quants `TQ4_1S`/`TQ3_1S`, and `--mmproj` composable with mtp/nextn/eagle3 on one slot (text turns accelerated, image turns fall back).
+- Owner label "llama.anabelianIUT.cpp mod" appears **nowhere in source**: grep `anabel|abelian|\bIUT\b` over `src/ ggml/ common/ include/ tools/ scripts/ *.py *.md` ??? zero real hits (only `unordered_map` noise + build `.tlog` paths). Verdict: **nickname only, no code identity**.
+- Version: `CMakeLists.txt` `project("llama.cpp" C CXX)`, no version string; `include(git-vars)` but no `.git` ??? every binary reports `build: b0-unknown` (confirmed in all `*.log` headers). Exact upstream commit **unrecoverable from tree** ??? build audit must stamp its own commit/hash.
+
+## 2. Top-level map vs stock layout
+
+- Stock layout intact: `src/` (llama-*.cpp/h + `models/`), `common/`, `ggml/` (all backends present: cpu, cuda, vulkan, metal, hip, cann, musa, sycl, opencl, rpc, hexagon, openvino, webgpu, virtgpu, zdnn, zendnn, blas), `include/llama.h + llama-cpp.h`, `tools/` (cli, server, quantize, imatrix, mtmd, perplexity, ???), `examples/`, `tests/`, `grammars/`, `gguf-py/`, `convert_hf_to_gguf.py`, `docs/`, `scripts/`, `pocs/`, `models/`, `vendor/`.
+- `src/` = 65 entries; stock files all present + 6 custom: `daavfx_dspark_bridge.cpp/.h`, `daavfx_per_layer_hooks.c/.h`, `daavfx_theater_dispatch.c/.h`. `common/` = 55 entries + 2 custom (`daavfx_per_layer_hooks.c/.h` duplicate).
+- `src/models/` = 120 entries incl. fork additions: `k2-horizon.cpp`, `gemma4-assistant.cpp`, `qwen35*.cpp` (4 files), `qwen3next.cpp`, diffusion models `llada.cpp`, `llada-moe.cpp`, `dream.cpp`, `rnd1.cpp` (Qwen3Moe???diffusion conversion), plus `bitnet.cpp`, `lfm2.cpp`, `apertus.cpp`, `laguna.cpp`, etc.
+- Custom additions list: `daavfx_helpers/` (7 files: `check_asm.cmd`, `compare_sections.ps1`, `diff_cmake.ps1`, `pe_info.ps1`, `pe_sections.ps1`, `debug_pe.ps1`, `debug2.ps1` + README ??? Tranche-15B worktree/PE-debug helpers, NOT build pipeline), `build_worktree.cmd/.ps1` + `build_worktree.log` + `section_compare.log` (empty), `run_benchmarks.bat/.ps1`, `bin/{bench_runner.ps1,summary.ps1,test_capture.ps1}`, `NEXTN.md`, `MTP.md`, `docs/qwen-udt/`, `scripts/quantize-masks/`, `scripts/{run-gemma4-*-mtp-server.sh,run-qwen36-*-nextn-server.sh,quantize-qwen-udt*.sh,???}`, `HKCU/` (stray), `asm_preload.cmake`.
+- Build dirs (stale, do not trust): `build/`, `build_cuda/`, `build_vulkan*/` (4 variants), `build_noprov/`, `build_prov/`, `build_vk_debug/`.
+- `ggml/src/ggml-vulkan/ggml-vulkan.cpp:113-134` carries **daavfx patches**: `#include "stub_shaders.cpp"` (iq1_m/s MoE, turbo3_0, tq4_1s variants the fork's shader-gen can't compile) + `dot2/cm2 ??? non-dot2` aliases "so the ternary compiles". Signal: Vulkan backend in this fork is **patched-but-fragile** (see ??5 build errors); irrelevant for `-ngl 0` CPU bench except: confirm CPU binary is built WITHOUT Vulkan to avoid backend-scan noise.
+
+## 3. Compat grep (first-hit file:line summary; full runs in ??2 of task)
+
+Pattern `PTQ1_0|PQ2_0|TQ1_0|Q2_0|ternary|hadamard|Hadamard|diffusion|uno|bonsai|prism|anabel|abelian|IUT`:
+- `src/llama-model-loader.cpp:57-60,764-767` ??? `TQ1_0 "1.69 bpw ternary"`, `TQ2_0 "2.06 bpw ternary"`, `TQ3_1S`, `TQ4_1S`. No PTQ/PQ2.
+- `src/llama-quant.cpp:385,483,818-821` + `tools/quantize/quantize.cpp:44-47` + `include/llama.h:153-159` ??? same four TQ ftypes. No PTQ/PQ2.
+- `ggml/include/ggml.h:425-437` ??? `TQ1_0=34, TQ2_0=35, ??? TQ3_1S=45, TQ4_1S=46`, KV-cache `TURBO2/3/4_0=42/43/44`. **No `PTQ1_0`, no `PQ2_0`, no `Q2_0`** (Q2_0 support removed; `ggml-vulkan.cpp:107-109` `#define GGML_TYPE_Q2_0 999` stub + `Q2_0 skip` pipeline lines).
+- `ggml/src/ggml-cpu/ops.cpp:684,1137,1269,4360,4639,4865,5600` + `ggml-quants.c:2340,5423` + `ggml.c:921,7774` ??? CPU kernels for `TQ1_0` (+ `TQ2_0` in gguf `constants.py:4043,4218`). Hadamard hits are **TurboQuant WHT only**: `src/llama-kv-cache.cpp:20-22` (`ggml_gen_hadamard`), `ggml-turbo-quant.c:242`, `ggml-cuda/turbo-wht.cu`, `ggml-metal/turbo-wht.h`. There is **no standalone "Hadamard runtime" for weight dequant** of the Bonsai kind ??? only WHT inside TurboQuant KV/weight path.
+- `diffusion`: `src/llama-arch.cpp:893` `llm_arch_is_diffusion`, `llama-model.cpp:1274-1314,10458` (non-causal attention for llada/dream/rnd1), `common/arg.cpp:3634-3671` (`llama-diffusion-cli`, `--diffusion-*`), `src/models/{llada,llada-moe,dream,rnd1}.cpp`.
+- `k2-horizon`: `llama-arch.h:144`, `llama-arch.cpp:140` (`k2-horizon`), `llama-model.cpp:3039,8488,10004,10312`, `models/k2-horizon.cpp` + `models.h:411`, vocab pre-type `K2_HORIZON=53` (`llama-vocab.h:64`, `llama-vocab.cpp:2187`).
+- `uno|bonsai|prism` (case-insensitive, excl. build/ dirs): **zero hits in source/converter/scripts**. `anabel|abelian`: zero. `K2-Horizon|k2_horizon` in `*.py`: zero ??? **`convert_hf_to_gguf.py` has NO k2-horizon mapping** (only `kimi-k2`), and `gguf-py/gguf/constants.py` `MODEL_ARCH` has `DREAM/LLADA/LLADA_MOE/RND1` but **no `K2_HORIZON`, no BONSAI/TERNARY**.
+- Chat/mmproj: generic `tokenizer.chat_template` KV (`llama-arch.cpp:331`), `llama-chat.cpp` heuristic + jinja parser in `common/` (stock path, no per-arch K2 override found); `tools/mtmd/` present (clip/mtmd stack) so `--mmproj` flag exists, but no K2/Qwen35-specific template handling ??? bench should use `--prompt`/`llama-bench`, not chat templates.
+
+## 4. Support matrices (CPU-only `-ngl 0` relevance)
+
+### Quant-type matrix
+| Type | Support | Evidence |
+|---|---|---|
+| F32/F16/BF16 | YES | stock |
+| Q4_0/Q4_1/Q5_0/Q5_1/Q8_0 | YES | stock ggml |
+| Q2_K/Q3_K/Q4_K/Q5_K/Q6_K (/Q8_K) | YES | all bench CSVs are Q3_K_M/Q4_K_M |
+| IQ2_XXS/XS/S, IQ1_S/M, IQ3_XXS/S, IQ4_NL/XS | YES | stock |
+| MXFP4/NVFP4 (gpt-oss), Q1_0 | YES (declared) | `ggml.h:430-433` |
+| **TQ1_0 / TQ2_0 (ternary)** | YES (CPU) | `ggml.h:425-426`, CPU cases in `ops.cpp`, quantize targets |
+| **TQ3_1S / TQ4_1S (WHT-rotated)** | YES (CPU declared; Vulkan shaders stubbed) | `ggml.h:436-437` |
+| TURBO2/3/4_0 KV cache | YES (opt-in `-ctk/-ctv`) | irrelevant for plain bench unless requested |
+| **PTQ1_0 / PQ2_0** | **NO** | zero hits repo-wide excl. build noise; `GGML_TYPE_COUNT=47` ends at TQ4_1S |
+| plain Q2_0 | NO (removed) | comment + Vulkan 999-stub |
+
+### Arch matrix (`src/llama-arch.h` = 141 entries; selection)
+| Arch string | Loader+graph | Notes for CPU bench |
+|---|---|---|
+| `qwen3`, `qwen3moe`, `qwen3next`, `qwen3vl(moe)` | YES | standard |
+| `qwen35`, `qwen35moe` (+ `qwen35_mtp`/`qwen35moe_mtp` NextN) | YES ??? fork specialty | combined `_MTP.gguf` loads as target; bench plain (no `--spec-type`) |
+| `gemma4`, `gemma4_assistant` | YES ??? fork specialty | assistant GGUF only useful with `--mtp-head`; bench target alone |
+| `lfm2`, `lfm2moe` | YES | prior CPU run exists (UNTRUSTED) |
+| `llada`, `llada-moe`, `dream`, `rnd1` | YES (diffusion path, non-causal attn, `llama-diffusion-cli`) | bench via diffusion CLI, not vanilla prompt bench |
+| `k2-horizon` | YES (loader+graph+vocab) | **converter gap**: no `convert_hf_to_gguf.py` mapping, no gguf-py MODEL_ARCH ??? existing `.gguf` runs, but re-quant/conversion unsupported |
+| `bitnet` | YES | generic ternary-arch precedent, not Bonsai |
+| `gpt-oss`, `glm4(moe)`, `deepseek2` | YES | standard |
+| bonsai / ternary-bonsai / prism arch | **NO** | no arch string, no model file, no converter entry |
+
+## 5. Prior attempts in the mod dir (UNTRUSTED numbers; patterns only)
+
+- `bin/*.csv` (2026-07-27/29, Ryzen 5600G, backend=Vulkan): `bench_before.csv` (76 lines: Qwen3.5-2B Q3_K_M/Q4_K_M, ngl 0/99, pp 512-4096 + tg), `bench_after.csv` (Q4_K_M ngl0 rerun ??? tg row collapsed to 0.64 t/s, i.e. **broken rerun**), `bench_cpu_baseline.csv` + `bench_gpu_provenance.csv` + `bench_igpu*.csv` (2B Q4_K_M ngl0: pp~204, tg~12.4). `benchmark_results_all.json` (ts 1789267641): only 2 CPU rows ??? LFM2.5-8B pp69.6/tg20.4, Qwen3.5-2B pp97.3/tg16.8, ngl 0. Treat all as smoke traces, not results.
+- Server/chat logs 2026-08-19/20 (GTX 1650 4 GB + Vulkan iGPU, i.e. NOT CPU-only): `small_run.log` (Qwen2.5-0.5B ??? sane reply, 383 pp / 119 tg); `qwen27b_cpu.log` (Qwen3.8-27B Q4_K_XL ??? Hello???think+reply, **7.0 pp / 1.4 tg**, 15.8 GB host resident); `qwen_ngl{20,22,25}, qwen_rerun_ngl20, qwen27b_ngl30` err tails: **`llama_params_fit: failed to fit ??? n_gpu_layers already set ??? abort`** (pinned -ngl vs 4 GB VRAM ??? config error, not model failure); `qwen27b_full_err/run_err.log`: `error: invalid argument: quantum|who` (bad CLI passthrough); `ornith_*` (Ornith-35B-A3B = `qwen35moe`, 753 tensors): empty stdout + 720???890 KB err of `buffer type overridden to Vulkan_Host` MoE spew ??? loads, offload-fights, no completion captured; `qwen64*.log` similar.
+- `build_vulkan.log` (2026-08-19): glslc failures ??? `generic_unary_head`, `mul_mat_vec_iface`, `dequant_tq4_1s.comp`, `dequant_turbo3_0.comp`, `iq1s_grid_gpu` undeclared. GPU backend in this tree **does not compile cleanly** ??? another reason CPU-only must use a Vulkan/CUDA-disabled build.
+- No crash/OOM/garbage-output pattern observed: "Hello" probes return coherent text; failures are fit-aborts, CLI misuse, and shader build errors. `19-ternary-bonsai-27b/` contains only `.cache/` (Bonsai never downloaded ??? `dl_bonsai_20260920.log` is just the start line); `18-k2-horizon-7b-uno/` is the **adapter-only** HF repo (`adapter_model.safetensors` 1.4 GB LoRA r=128 + `adapter_config.json`, paper 2609.04010) ??? no merged weights, no GGUF, and llama.cpp has no LoRA-diffusion-adapter runtime.
+
+## 6. Verdicts
+
+- **Bonsai (prism-ml/Ternary-Bonsai-2-27B-gguf, PTQ1_0/PQ2_0 + Hadamard runtime): NO.** Both quant types absent (`GGML_TYPE_COUNT=47`, nothing beyond TQ4_1S), no bonsai/prism arch, stock rejects it and this mod adds nothing in that direction (its ternary story is TQ1_0/TQ2_0 + TurboQuant WHT only). Do not attempt; expect `unknown model architecture or unsupported quant` at load.
+- **Uno (IFM/K2-Horizon-7B-Uno, diffusion adapter): NO as a bench target.** Base arch `k2-horizon` = YES, but the Uno artifact is a safetensors LoRA adapter, not a GGUF ??? no merge path in this repo (converter lacks the arch) and no adapter runtime. Base `16-k2-horizon-7b/K2-Horizon-7B-Q4_K_M.gguf` is the benchable proxy.
+- **Existing families (likely-YES, to confirm per-file at bench time):** Qwen3.5 dense 2B/4B + 27B + Ornith-35B-A3B MoE (Q3_K_M/Q4_K_M ??? prior loads OK); Gemma4 E4B + 26B-A4B (fork's home turf, bench target-only); LFM2.5-8B-A1B; K2-Horizon-7B base Q4_K_M; **UNKNOWN until `general.architecture` checked:** K2-Horizon-MoVA-36B-A4B, Laguna-XS-2.1, Spark-X2.5-4B, Nemotron-30B-A3B (no contrary signal, but unseen in logs ??? verify arch string is in the 141-entry table before benching).
+
+## 7. Top 5 risks for CPU-only bench + build-audit checks
+
+1. **27???35B MoE/dense on 32 GB RAM with default ctx** ??? qwen27b run already held ~15.8 GB host at tiny ctx; 262144-ctx KV (qwen35 family) will OOM at long prompts. *Build audit:* fix `-c` (e.g. 4096/8192), `-b`, threads=6 (5600G/12T sweet spot in CSVs), `--mlock` policy, and `fit off`; measure resident per model first.
+2. **No commit hash / stale build dirs** ??? `b0-unknown` everywhere, 6 build dirs of unknown flags; bench_before/after divergence + `bench_after` 0.64 t/s row prove flag drift. *Build audit:* fresh `build_cpu_only` (Release, AVX2, CUDA=OFF, Vulkan=OFF), record `CMakeCache.txt` + `--version`, rebuild both stock and mod from pinned commits.
+3. **K2-Horizon converter gap** ??? K2 GGUFs bench but can't be re-quantized/converted in-tree; MoVA variant arch unverified. *Build audit:* `gguf-dump general.architecture` on both K2 files; if MoVA ??? `k2-horizon`, mark NO-GO.
+4. **NextN/MTP combined GGUFs + TurboQuant KV flags leaking into "plain" bench** ??? combined `_MTP.gguf` and `-ctk turbo3` change the workload. *Build audit:* bench matrix must pin base GGUF + f16 KV + FA setting explicitly; treat MTP/NextN/turbo as separate (later) experiments.
+5. **Diffusion models need a different harness** ??? llada/dream/rnd1 (+ Uno conceptually) don't do standard AR bench; `llama-bench -p/-n` numbers would be meaningless. *Build audit:* route diffusion-arch files to `llama-diffusion-cli --diffusion-steps ???`, exclude from AR table.
+
+---
+*Teams: structure+compat only. No builds, no inference executed. Sources: README.md, CMakeLists.txt, src/common/ggml/include listings, grep hits above, *.log + bin/*.csv + benchmark_results_all.json tails, GGUF/llm-collection glob + 18-uno adapter files.*
+
+
+===== BAK_AUDIT_2026-09-21.md =====
+# .bak Duplicate Audit ??? 15-qwen3.5-2b4b
+
+**Date:** 2026-09-21
+**Agent:** CLEANUP (read-only audit; no files deleted)
+**Scope:** `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\GGUF\llm-collection\15-qwen3.5-2b4b\`
+
+## 1. Folder listing (size + date)
+
+| File | Size (bytes) | Size (GiB) | LastWriteTime | Role |
+|------|-------------|------------|---------------|------|
+| qwen3.5-2b-q4km.gguf | 1,945,311,744 | 1.812 | 31/08/2026 17:14 | ORIGINAL (kept, referenced) |
+| qwen3.5-2b-q4km.gguf.bak | 1,945,311,744 | 1.812 | 10/09/2026 09:00 | backup copy |
+| qwen3.5-4b-q4km.gguf | 3,389,971,840 | 3.157 | 31/08/2026 17:15 | ORIGINAL (kept, referenced) |
+| qwen3.5-4b-q4km.gguf.bak | 3,389,971,840 | 3.157 | 10/09/2026 09:01 | backup copy |
+
+Name mapping: each `.bak` = sibling non-bak name + `.bak` suffix. Sizes equal per pair. `.bak` files dated 10 days AFTER originals (backups, not downloads).
+
+## 2. SHA256 (full-file Get-FileHash)
+
+| Pair | .gguf | .gguf.bak | Identical? |
+|------|-------|-----------|------------|
+| 2b | `7A3A8D55382135A773916FD7C35044B2A2A3A7B8DEE788095D70F122E6D8F520` | `7A3A8D55382135A773916FD7C35044B2A2A3A7B8DEE788095D70F122E6D8F520` | YES, byte-identical |
+| 4b | `81FB60C7DAA80FC1123380B98970B320AE233409F0F71A72ED7B9B0D62F40490` | `81FB60C7DAA80FC1123380B98970B320AE233409F0F71A72ED7B9B0D62F40490` | YES, byte-identical |
+
+## 3. Reference check (grep over *.py, *.bat, *.md, *.txt, *.json, *.modelfile, *.sh, *.log; .cache excluded, files < 2MB)
+
+**Refs to `.bak` paths: ZERO in code/scripts.** Only doc mentions:
+- `00-CPU-BENCH-MASTER/logs/AUDIT_build_and_fit_2026-09-21.md:90` ??? table note "(9.938 ? incl. .bak dupes)"
+- `00-CPU-BENCH-MASTER/logs/AUDIT_build_and_fit_2026-09-21.md:123` ??? open TODO: "Clean `15-qwen3.5-2b4b/*.bak` dupes (4.97GB waste) - confirm identical hash first" ??? **hash now CONFIRMED by this audit**
+
+**Refs to the folder / non-bak files (these must keep working ??? all point at NON-bak paths):**
+- `qwen35-4b.modelfile:1` ??? `FROM .../15-qwen3.5-2b4b/qwen3.5-4b-q4km.gguf` (non-bak ???)
+- `serve-llm.sh:17` ??? `[qwen35-2b]="$COLLECTION/15-qwen3.5-2b4b/qwen3.5-2b-q4km.gguf"` (non-bak ???)
+- `serve-llm.sh:18` ??? `[qwen35-4b]="$COLLECTION/15-qwen3.5-2b4b/qwen3.5-4b-q4km.gguf"` (non-bak ???)
+- `00-CPU-BENCH-MASTER/README.md:21` ??? "15-qwen3.5-2b4b 9.94GB (2 files) - FITS" (counts non-bak only)
+
+## 4. Disk (F:)
+
+- Free: **1,582,778,466,304 bytes = 1,474.08 GiB**
+- Used: 1,320.43 GiB / Total: 2,794.50 GiB
+- Deletion NEEDED? **NO** ??? free space abundant (~1.47 TB).
+
+## 5. Other collection folders ??? *.bak / *.tmp / dup-scan (list only, NO deletion)
+
+- `*.bak` anywhere else in llm-collection: **NONE** (only the 2 files above).
+- `*.tmp`: **NONE**.
+- `*.incomplete` (HuggingFace partial downloads, left as-is):
+  - `lfm2.5-8b-a1b-dspark/.cache/huggingface/download/xGOKKLRSlIhH692hSVvI1-gpoa8=.2995e1eaf4bdfd4ce435500082405ec003c4288ce95b327c58240f061f853a38.44dd0426.incomplete` ??? 469,490,424 B (~0.44 GiB)
+  - `nemotron-30b-a3b/.cache/huggingface/download/bN3iqQfvqKv_uKykp6oH6AUXePs=.edcb5d4650796ed2fb412498de6f83b585862312c747ddb74f0ea04b22206181.bfa2539d.incomplete` ??? 256,000,000 B (~0.24 GiB)
+  - `ornith-35b-a3b/.cache/huggingface/download/ArwCeY5hA8S2VBotx1eu8ZTEUjg=.5aa203a8c0b9998aa41a625ef1a6241c7ffb26b99acce9965a4986d3c3dc2943.aa8acf90.incomplete` ??? 4,149,055,308 B (~3.86 GiB)
+
+## VERDICT: KEEP (do NOT delete)
+
+- (a) Byte-identical: YES (full SHA256 both pairs). (b) Zero refs to `.bak`: YES.
+- BUT deletion is NOT needed (1,474 GiB free) and per no-risk rule the backups are worth more alive than the 4.97 GB they occupy: if an original corrupts, the `.bak` avoids a re-download.
+- **Reclaimable if ever needed: 5,335,283,584 bytes = 4.97 GiB (5.34 GB decimal).**
+- Pre-condition from `AUDIT_build_and_fit_2026-09-21.md:123` ("confirm identical hash first") is now SATISFIED ??? a future cleanup may delete the two `.bak` files without re-hashing, provided F: space pressure justifies it.
+- **Nothing was deleted by this audit.**
+
+
+===== BONSAI_DEBUG_2026-09-23.md =====
+# BONSAI PRISM init-stall DEBUG ??? 2026-09-23
+
+## Verdict: NOT a hang. Root cause = no AVX2 fast path for PQ2_0 / PTQ1_0 on Zen 3 ??? prompt eval ~0.4 t/s ??? 300s bench guard expires before the first token is ever printed (response is written to stdout only as chat-completion output; nothing reaches stdout during load+prompt-eval).
+
+## Evidence (3 heavy runs budget, used 2)
+
+### Run 1 ??? PQ2_0, -t 1, -c 128, -n 4, -p "Hi", --no-warmup, -lv 4, kill-guard 180s
+- Dir: `00-CPU-BENCH-MASTER\results_fresh\19-ternary-bonsai-27b\PRISM-DEBUG-verbose\run1_pq20_*`
+- stderr verbose log captured everything (10 KB immediately, grows to 20 KB). Key timeline:
+  - prism llama-cli starts an EMBEDDED HTTP server (`srv` logs, `listening on http://127.0.0.1:51109`, chat templates, slots). Logging goes to stderr, NOT stdout ??? explains "no banner / 0 bytes stdout" in prior smoke runs.
+  - Model metadata read OK at ~1.8s. `qwen35` arch, 64 layers, 851 tensors.
+  - `model loaded` at ~95s (1-thread load/repack is slow but completes).
+  - Prompt task accepted at ~95.9s; then 100% of ONE core burned continuously (CPU time ??? wall time from 95s???180s) = **CPU-bound prompt eval, not I/O stall** (WS stable 0.11 GB = mmap, file cached).
+  - Killed at 180s still inside prompt eval (53 tokens, ctx 256).
+
+### Run 2 ??? PQ2_0, -t 12, -c 128, -n 4, -p "Hi", --no-warmup, -st, kill-guard 240s
+- Dir: `...\PRISM-DEBUG-verbose\run2_pq20_t12_*`
+- Load+repack ~12?? parallel (CPU 129s in first 15s wall), full 6.7 GB resident.
+- **COMPLETED at ~170s and exited cleanly.** stdout (1130 B) contains banner ASCII art, build line, and the generated reply `[Start thinking]\n\nThe user said "`.
+- Reported speeds: **Prompt: 0.4 t/s | Generation: 0.3 t/s** at 12 threads on Ryzen 5 5600G.
+
+## Code-trace results
+
+1. **Banner path is a red herring.** prism b10709 `llama-cli` is a server-backed client; human output goes to stdout only at end of a turn, diagnostics to stderr. Prior "0-byte output.txt" = run killed before first turn finished, not a banner/init bug.
+2. **PQ2_0 x86 kernel** (`ggml/src/ggml-cpu/arch/x86/quants.c:562`): fast `ggml_vec_dot_pq2_0_q8_0` path is gated behind `__AVX512VNNI__ && __AVX512VL__ || __AVXVNNI__`. Ryzen 5 5600G = AVX2 only (confirmed by system_info line: `AVX = 1 | AVX2 = 1`, no AVX512/VNNI) ??? falls through to the tail generic loop in that same function.
+3. **PTQ1_0 has NO SIMD anywhere** ??? `ggml/src/ggml-cpu/arch-fallback.h` repeats 7??: "PTQ1_0 currently has only the generic vec_dot; alias it here until a SIMD version lands". So PTQ1_0 would behave the same or worse; Run 3 skipped (no diagnostic value, constraints).
+
+## Root-cause classification
+`no-fast-path` (compute-slowness, misdiagnosed as init-stall). Load works, init works, server works ??? a 27B model at ~0.35 t/s prompt-eval cannot finish a 40???60-token prompt inside the 300s bench guard, and nothing is emitted to stdout until the turn ends.
+
+## Concrete next steps (pick one)
+1. **Benchmark-harness fix (cheap, do now):** raise PRISM guard to ???900 s (prompt-eval alone needs ~150???400 s at 12 threads for typical bench prompts), run with `-t 12 -st --no-warmup`, and capture stderr to a log file while reading stdout at completion. Expect ~1 h per full-length bench at 0.3 t/s.
+2. **Code-patch candidate (medium, high value):** write an AVX2 `ggml_vec_dot_pq2_0_q8_0` in `ggml-cpu/arch/x86/quants.c` ??? unpack 2-bit codes with `_mm256_srli_epi16/and/mullo` (same trick as the VNNI block already present) then `_mm256_maddubs_epi16` + `_mm256_madd_epi16` instead of `dpbusd`. Also port `gemv/gemm_pq2_0_4x8` repack kernels if REPacker is used. Would give ~5???10?? on Zen 3.
+3. **Long-term:** report upstream to prism maintainer ??? both PQ2_0 (AVX2 gap) and PTQ1_0 (generic-only on every arch) lack SIMD for the dominant x86-64 AVX2 tier.
+
+MOD and STOCK untouched. 1 of 3 heavy-run budget unused.
+
+
+===== CLOSEOUT_2026-09-24.md =====
+# CLOSEOUT ??? 2026-09-24 (DOC agent, benchmark series final)
+
+Machine: Ryzen 5 5600G 6C/12T, 32 GB DDR4, CPU-only (`-ngl 0`). Canonical matrix: `results_fresh\BENCH_MATRIX_FINAL.md`.
+
+## Patches applied this session
+
+1. **STOCK rope guard fix** ??? `src/llama-model-loader.cpp:477-481` + `models/qwen35.cpp:6` + `qwen35moe.cpp:9`. Fixes qwen3.5 rope dimension_sections; 15-2b / 15-4b now load and generate on STOCK.
+2. **STOCK k2-horizon arch port** ??? 9 hunks + new `src/models/k2-horizon.cpp`. Enables 16-K2-Horizon and 17-MoVA arch on STOCK-PATCHED.
+3. **PRISM AVX2 PQ2_0 vec_dot branch** ??? `ggml/src/ggml-cpu/arch/x86/quants.c`, maddubs+madd idiom, saturation-safe. ~2.5-3x speedup vs scalar: 1.15 / 0.94 t/s vs 0.4 / 0.3.
+
+## What flipped
+
+- **FAIL ??? PASS (STOCK day matrix):** 15-qwen3.5-2b (115.45/15.81 t/s), 15-qwen3.5-4b (43.80/7.06 t/s), 16-K2-Horizon-7B (24.94/4.62 t/s, full quality PASS). STOCK-PATCHED now ties or beats MOD on 7/7 comparable pairs ??? the TurboQuant differential no longer buys arch coverage.
+- **TIMEOUT ??? numbers (MOD overnight):** laguna-XS-2.1 (bench 3.24/3.61, quality 4/4 at 40.8/10.5 t/s warm-cache), MoVA-36B (3.13/3.47, quality 3/4, 16.8/6.1 t/s warm), nemotron-3.5-30B (0.37/0.27, quality 4/4 at 1.2 t/s), 01-gemma-4-26B-Q4 (0.45/4.14, peak 18.6 GB), ornith-Q3 (4.1/2.62, peak 18.6 GB).
+- **PRISM:** Bonsai PQ2_0 unpatched = 4/4 correct but 823 s+; with AVX2 patch = 4/4 correct in 302.8 s, bench 1.15/0.94 t/s.
+
+## Usable on 5600G ??? honest per size class
+
+- **???7 GB ??? fast, usable.** 09-LFM (tg 19.12), 15-2b (15.81), spark (8.36), 05 gemma-E4B (7.4/7.1), 16-K2 (4.62), 15-4b (7.06). Daily-driver tier.
+- **15-21 GB ??? marginal.** laguna 10.5 t/s and MoVA 6.1 t/s only with warm page cache; cold-cache bench is 3.1-3.6 t/s. Quality is real (laguna 4/4, MoVA 3/4) but interactive use is painful; batch/overnight only.
+- **23 GB+ ??? not usable.** nemotron 0.27-1.2 t/s; correct answers, useless latency.
+- **Bonsai (PRISM):** after the AVX2 patch it works end-to-end (4/4 correct, 302.8 s) at 1.15/0.94 t/s. The advertised "runs-in-8GB / 143 t/s" claim is CUDA/MLX-specific; on x86 CPU you need VNNI (upstream) or our AVX2 patch, and even then it stays ~1 t/s class ??? not viable for interactive use on this box.
+
+## Bonsai identity confirmation
+
+`19-ternary-bonsai-27b` = **PrismML Ternary Bonsai 2 27B** (the Sep-17-2026 release): Qwen3.8-27B base, PTQ1_0 (1.76 bpw) / PQ2_0 variants, marketed as "9x smaller / runs in 8 GB / 143 t/s on RTX 5090 / 46.8 on M5 Max / 98.2% retention". Caveat confirmed by our measurement: those throughput numbers are CUDA/MLX-only; x86 CPU needs VNNI or the new AVX2 patch.
+
+## Queued patches status
+
+All three applied and verified. STOCK-PATCHED is a strict superset of old STOCK and matches MOD; the fix queue is empty. See `TRACKING.md`.
+
+
+===== FIX_stock_parity_PREP_2026-09-21.md =====
+# FIX STOCK parity PREP ??? 2026-09-21 (READ-ONLY, no builds/runs)
+
+STOCK: `shared/llama.cpp-original` b11065 ce8caa6e | MOD: `shared/llama.cpp-abelianIUT` (AtomicChat turboquant)
+Proofs read first:
+- `results_fresh/BENCH_MATRIX.md` (??A FAIL rows, ??C arch-reject, ??D prism, ??Fix queue 1-2)
+- `results_fresh/15-qwen3.5-2b4b/STOCK-2b/output.txt` (exp 4 got 3) + `STOCK-4b/output.txt` (same)
+- `results_fresh/15-qwen3.5-2b4b/MOD-2b/output.txt` (PASS, MATH 1165) + `MOD-4b/` (PASS)
+- `results_fresh/16-k2-horizon-7b/STOCK/output.txt` (unknown arch) + `MOD/output.txt` (PASS 22.17/4.53)
+- `results_fresh/17-k2-horizon-mova-36b-a4b/STOCK/output.txt` (same unknown-arch)
+- `results_fresh/19-ternary-bonsai-27b/PRISM-PTQ10/output.txt` (zero bytes, TIMEOUT) + `PRISM-PQ20/`
+
+No source tree modified. No cmake / llama-cli / llama-bench / inference executed.
+
+## 1. Root cause
+
+(a) qwen3.5 `rope.dimension_sections wrong length (exp 4 got 3)`:
+- STOCK enforces exact length 4 in generic loader, and both qwen35 call sites demand 4.
+  Failing GGUFs carry 3-entry `qwen35.rope.dimension_sections` (older converter wrote raw
+  `mrope_section` [t,h,w] without padding; STOCK's own `conversion/qwen.py` now documents
+  the 4-entry default `[11,11,10,0]` but the loader was never relaxed).
+- MOD accepts 3-or-4 via `n == 0` wildcard in `get_key_or_arr` + calls with `n=0` for
+  QWEN35/QWEN35MOE. MOD converter pads to 4 (`mrope_section[:4]`), but loader still tolerates 3.
+- Hence STOCK throws at load (40 MB peak, 1-2 s), MOD runs.
+
+(b) `unknown model architecture: 'k2-horizon'`:
+- STOCK has no `k2-horizon` arch at all: missing enum entry, arch-name table entry,
+  model factory case, hparams/tensor/graph implementation, vocab pre-type, gguf constants.
+  Throw site `src/llama-model.cpp:366-370` (`LLM_ARCH_UNKNOWN` -> "unknown model architecture").
+- MOD implements k2-horizon fully (dense 7B + MoVA MoE 36B paths): enum + table + centralized
+  hparams switch + tensor switch + `llm_build_k2_horizon` graph (361 lines) + vocab pre-type 53.
+- Hence STOCK rejects 16 + 17-MoVA at arch lookup (14 MB peak, 1-3 s), MOD runs 16 to PASS.
+
+## 2. MOD-vs-STOCK diff summary (file:lines both sides)
+
+R1 rope guard core:
+- STOCK `src/llama-model-loader.cpp:457-482` ??? `get_key_or_arr<T,N_MAX>`, strict
+  `if (n != arr_info.length) throw ... wrong array length` at 477-478.
+- MOD `src/llama-model-loader.cpp:437-480` ??? same fn + wildcard:
+  comment 457-460 ("n == 0 is wildcard ... 3 or 4 entries ... Qwen3.5 GGUFs"),
+  guard `if (n != 0 && n != arr_info.length)` at 461-463. Only delta in this fn.
+
+R2 rope call sites:
+- STOCK `src/models/qwen35.cpp:6`, `src/models/qwen35moe.cpp:9`:
+  `get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS, hparams.rope_sections, 4, true)`.
+- MOD `src/llama-model.cpp:2813` (QWEN35), `:2850` (QWEN35MOE):
+  `get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS, hparams.rope_sections, 0, true)`.
+  (MOD NEXTN variants at 2884/2900 keep `4` ??? intentionally strict, not to port.)
+- Converters: STOCK `conversion/qwen.py:621-634` (`_Qwen35MRopeMixin` default `[11,11,10,0]`);
+  MOD `convert_hf_to_gguf.py:1173-1179` (pad to 4, `mrope_section[:4]`). Both write 4 now;
+  the 3-entry files in the wild are legacy ??? loader must tolerate, not converter.
+
+K1 arch registry:
+- STOCK `src/llama-arch.h:150-166` ??? ends `... KIMI_K3, TALKIE, MELLUM, EAGLE3, MINIMAX_M3,
+  DFLASH, NANBEIGE, QWEN3TTS, POCKETTTS, MINIMAX_01, HRM_TEXT, UNKNOWN`; no K2_HORIZON.
+- MOD `src/llama-arch.h:130-146` ??? `... SPARK2_5,` then `LLM_ARCH_K2_HORIZON,` (line 144), `UNKNOWN`.
+- STOCK `src/llama-arch.cpp:20-161` ??? name table, no k2 entry (ends spark2_5 151 ... UNKNOWN 161).
+- MOD `src/llama-arch.cpp:120-142` ??? `{ LLM_ARCH_K2_HORIZON, "k2-horizon" }` at 140.
+- Throw sites: STOCK `src/llama-model.cpp:347-348` (mapping default "unsupported..."),
+  `:366-370` (loader "unknown model architecture"); MOD equivalent `src/llama-model.cpp:3115`
+  is reached only for truly unknown archs.
+
+K2 model implementation (structural mismatch ??? not line-for-line):
+- MOD `src/llama-model.cpp:3039-3082` hparams (eps, groupnorm, MoE, MoVA value-expert,
+  type 1B/36B); `:8488-~8600` tensors (MoVA v-gate/v-exps vs dense wv, moe router);
+  `:10004-10007` graph dispatch `llm_build_k2_horizon`; `:10312` rope `NEOX`.
+- MOD `src/models/k2-horizon.cpp:1-361` graph (`k2_horizon_group_rms_norm` 4-38,
+  `llm_build_k2_horizon` ctor 40-361); `src/models/models.h:411-413` decl;
+  `src/CMakeLists.txt:95` lists `models/k2-horizon.cpp`.
+- STOCK counterpart does not exist: `src/models/models.h:2652-2662` ends at `spark2_5`;
+  `src/CMakeLists.txt:9` globs `models/*.cpp` (no per-file edit needed ??? new file auto-picked);
+  `src/llama-model.cpp:323-346` factory, `:3046` rope-NEOX list, arch-helper switches
+  (`llama-arch.cpp:1089-1091` hybrid? k2 not hybrid) need new cases.
+- STOCK API is `llama_model_*` subclasses (cf. `models/qwen35.cpp`, `models/spark2-5.cpp`);
+  MOD API is centralized switch + `llm_build_*`. MOD's 361-line graph cannot be dropped in verbatim.
+
+K3 vocab pre-type (ID COLLISION ??? see risks):
+- MOD `src/llama-vocab.h:64` ??? `LLAMA_VOCAB_PRE_TYPE_K2_HORIZON = 53`;
+  `src/llama-vocab.cpp:2185-2188` maps `tokenizer_pre == "k2-horizon"` (clean_spaces=false).
+- STOCK `src/llama-vocab.h:40-71` ??? 53 is already `WHITESPACE`, 58 is `SPARK2_5`, max 59 `UFAKZEKA`;
+  `src/llama-vocab.cpp:2199-2201` spark2_5 branch, `:329-336` its regex block.
+  Port must allocate a NEW id (>= 60), NOT 53.
+
+## 3. Minimal patch plan (STOCK only; numbered hunks, no rewrite)
+
+H1 ??? rope wildcard (1-line logic + comment), lowest risk:
+  `src/llama-model-loader.cpp:461-463` ??? port MOD guard verbatim:
+  `if (n != 0 && n != arr_info.length) throw ...` + 3-line wildcard comment.
+  Do NOT touch scalar overload below (503-508).
+
+H2 ??? qwen35 call sites relax to wildcard:
+  `src/models/qwen35.cpp:6`, `src/models/qwen35moe.cpp:9` ??? change `4 -> 0` in the
+  `get_key_or_arr(ROPE_DIMENSION_SECTIONS, ..., true)` calls only.
+  Leave qwen2vl/qwen3vl/qwen4exp at 4.
+
+H3 ??? arch enum: `src/llama-arch.h:165` ??? insert `LLM_ARCH_K2_HORIZON,` before `LLM_ARCH_UNKNOWN`.
+
+H4 ??? arch name: `src/llama-arch.cpp:160` ??? insert `{ LLM_ARCH_K2_HORIZON, "k2-horizon" },`
+  before UNKNOWN entry.
+
+H5 ??? factory: `src/llama-model.cpp:345-346` ??? add
+  `case LLM_ARCH_K2_HORIZON: return new llama_model_k2_horizon(params);`
+  (class defined in H7; placement next to SPARK2_5).
+
+H6 ??? rope type: `src/llama-model.cpp:3046` ??? add `case LLM_ARCH_K2_HORIZON:` to the
+  NEOX group (matches MOD `:10312`).
+
+H7 ??? new model files (adapt, NOT copy): create `src/models/k2-horizon.cpp` +
+  decl in `src/models/models.h` (after spark2_5 block ~2662) as
+  `struct llama_model_k2_horizon : public llama_model_base` with
+  `load_arch_hparams / load_arch_tensors / build_arch_graph`, porting semantics of
+  MOD `llama-model.cpp:3039-3082` + `:8488+` + `models/k2-horizon.cpp:1-361`
+  into STOCK's subclass API. No CMake edit needed (glob at `src/CMakeLists.txt:9`).
+
+H8 ??? vocab: `src/llama-vocab.h:70` ??? append `LLAMA_VOCAB_PRE_TYPE_K2_HORIZON = 60,`
+  (fresh id!); `src/llama-vocab.cpp` tokenizer-pre chain (~2202) ??? add
+  `else if (tokenizer_pre == "k2-horizon") { pre_type = ..._K2_HORIZON; clean_spaces = false; }`;
+  regex switch (~329) ??? confirm inherited default is acceptable for k2-horizon BPE
+  (MOD assigns no custom regex; do NOT invent one).
+
+H9 ??? gguf constants (check-only): verify `gguf-py/gguf/constants.py` MODEL_ARCH has
+  k2-horizon entry for reconversion; if missing, add alongside QWEN35 lines (~1280).
+  Not load-bearing for STOCK runtime.
+
+Order: H1+H2 first (unblocks 15-2b/4b, tiny blast radius); H3-H9 second (new arch).
+Hunks count: 9 (2 rope + 7 k2-horizon). Preview excerpts staged in `logs/patches_preview/`
+  (H1/H2 + K1/K3 only; H7 full graph deliberately NOT snapshotted ??? 361 lines, adapt at build time).
+
+## 4. Risk notes
+
+- Vocab id collision: MOD id 53 == STOCK `WHITESPACE`. Reusing 53 corrupts persisted
+  pre-type enums. MUST use fresh id (>= 60) + rebuild all STOCK binaries together.
+- Rope wildcard widens acceptance for any future `n=0` caller ??? currently only the two
+  qwen35 call sites after H2, so blast radius is contained. Do NOT blanket-convert other arches.
+- 3-entry sections semantics: MOD `get_arr` reads `arr_info.length` elements; 4th element
+  of `hparams.rope_sections` keeps prior/default (0). Matches converter default tail 0 and
+  MOD passing runs ??? safe. If paranoid, zero-fill `rope_sections` before call (check STOCK
+  hparams default init first).
+- API mismatch H7 is the only large hunk: STOCK subclass vs MOD centralized+llm_build.
+  Expect compile iterations (tensor names `LLM_TENSOR_ATTN_V_GATE/V_EXPS`, MoVA hparams
+  `n_value_expert*`, group-norm helpers). Keep MOD files open side-by-side; do not paraphrase
+  dimensions from memory.
+- 17-MoVA 36B will LOAD after port but remains TOO-BIG on CPU (matrix ??C: MOD double TIMEOUT
+  182 s, 3.3 GB sampled, host starved). Success criterion for 17 is "correct arch accept +
+  clean OOM/timeout behavior", NOT full quality pass. 16-7B is the real PASS target (8.7 GB MOD).
+- No STOCK/MOD trees touched by this PREP. Patches_preview holds excerpts only, not appliable patches.
+
+## 5. BONUS ??? Prism Bonsai zero-output (code-inspect only, no runs)
+
+Symptom: both quants TIMEOUT 302 s, zero stdout bytes, not even banner, peaks 5.8-6.9 GB
+(proof `19-ternary-bonsai-27b/PRISM-*/output.txt` + bench matrix ??D).
+Banner path `tools/cli/cli-context.cpp:119` (spinner "Loading model...") -> `server->start/wait_ready`
+122-131 -> banner built+shown only at `:427-458`. Zero bytes => stall BEFORE banner, i.e. inside
+model load / mmap / tensor-buffer init, not generation.
+
+3 suspicious sites (file:line + why):
+1. `src/llama-model.cpp:1196-1332` (+`:1971-2094` materialization) ??? `prism.hadamard.*`
+   manifest parse + per-weight rotation setup runs during load, before any print; block-size
+   divisibility checks + rotation-tensor alloc per folded weight can stall large ternary models
+   on CPU with zero console output.
+2. `src/llama-kv-cache.cpp:345-364` ??? Hadamard matrix precompute (`attn_rot_hadamard[n]`,
+   `ggml_gen_hadamard`) allocates n*n floats for n up to max head dim during init; on 27B this
+   is pure CPU work pre-banner and matches "no log output at all".
+3. `ggml/src/ggml-cpu/quants.c:285-329` (+`ggml-cpu/arch-fallback.h:83`) ???
+   `ggml_vec_dot_ptq1_0_q8_0_generic` is the ONLY PTQ1_0 path ("currently has only the generic
+   vec_dot; alias it here until a SIMD version lands"); explains post-load slowness (tg ~0)
+   but NOT the pre-banner stall ??? listed to avoid misattributing the hang to dequant alone.
+   Next step (later): ctx 256 + 1 thread + verbose log to bisect init vs first-token.
+
+## 6. Build-and-verify steps FOR LATER greenlight (WRITE ONLY ??? DO NOT RUN)
+
+All CPU-only, keep owner PC fast; run only after explicit greenlight, one at a time:
+
+B1 rebuild STOCK (from `shared/llama.cpp-original`, ~10-20 min, low priority):
+  `cmake -S . -B build_cpu_original -DGGML_NATIVE=OFF -DLLAMA_CURL=OFF -DBUILD_SHARED_LIBS=OFF`
+  `cmake --build build_cpu_original --config Release -j 6`
+  Expect: `build_cpu_original/bin/Release/llama-cli.exe` refreshed. If H7 included, expect
+  1-2 compile passes on tensor-name/hparams mismatches.
+
+V1 qwen3.5-2b smoke (guard 120 s):
+  `build_cpu_original/bin/Release/llama-cli.exe -m <GGUF>/15-qwen3.5-2b4b/qwen3.5-2b-q4km.gguf -ngl 0 -t 10 -c 4096 -n 96 --seed 42 --temp 0 -rea off -st --simple-io -f <prompt> --timeout 120`
+  Expect: loads (no dimension_sections error), MATH line present. Proof baseline: MOD MATH 1165.
+
+V2 qwen3.5-4b smoke (guard 180 s): same with `qwen3.5-4b-q4km.gguf`, `-c 4096 -n 96`.
+  Expect: loads; MOD baseline MATH 414.
+
+V3 k2-horizon-7b smoke (guard 300 s):
+  `... -m <GGUF>/16-k2-horizon-7b/K2-Horizon-7B-Q4_K_M.gguf -ngl 0 -t 10 -c 4096 -n 96 ... --timeout 300`
+  Expect: arch accepted, quality JSON well-formed; MOD baseline pp 22.17/tg 4.53, peak ~8.7 GB.
+  Do NOT run 17-MoVA as pass/fail quality; if attempted, guard 180 s, expect TIMEOUT (too-big proven).
+
+---
+Confirmation: ZERO builds/runs executed for this PREP (read/grep/write only).
+Hunks: 9 (H1-H9). Preview: `logs/patches_preview/hunk1_rope_guard.diff`,
+`logs/patches_preview/hunk2_k2horizon_arch.diff` (excerpt-only, <=200 lines total).
+
+
+===== OVERNIGHT_LAUNCH_2026-09-23.md =====
+# OVERNIGHT LAUNCH ??? 2026-09-23 04:15
+
+Greenlight: "free PC now ??? non-stop". Sequential, fully kill-guarded.
+
+## Launch
+- Script: `bench_overnight\RUN_OVERNIGHT.ps1` (v2, ASCII-clean, BelowNormal process + BelowNormal llama procs)
+- Host PowerShell PID: **16144** (BelowNormal, launched detached via Start-Process, hidden window)
+- Host stdout/stderr: `bench_overnight\OVERNIGHT_HOST.out.txt` / `OVERNIGHT_HOST.err.txt`
+- Run log: `bench_overnight\OVERNIGHT_RUN.log` (live)
+- Results per run: `results_fresh\<model>\<ENGINE>-OVERNIGHT\` -> output.txt / bench.txt / *_result.json
+
+## Queue (7 targets, guard 1800 s each, 60 s cooldown between)
+| # | model | engine | ctx | -t | runs |
+|---|---|---|---|---|---|
+| A | Bonsai PQ2_0 6.71GB | PRISM | 512 | 12 | quality n=96 |
+| B | Bonsai PTQ1_0 5.54GB | PRISM | 512 | 12 | quality n=96 |
+| C | 01 gemma-4-26B Q4 15.78GB | MOD | 2048 | 10 | bench p128/n32 + quality n=96 |
+| D | ornith-35B Q3 15.55GB | MOD | 2048 | 8 | bench + quality |
+| E | nemotron-30B Q4 23.53GB | MOD | 2048 | 6 | bench + quality |
+| F | laguna 18.88GB | MOD | 2048 | 8 | bench + quality |
+| G | 17-MoVA 20.83GB | MOD | 2048 | 6 (-t6 host-starve guard) | bench + quality |
+
+Runs: A-B = 1 each (PRISM quality-only), C-G = 2 each (bench+quality) = **12 guarded runs**.
+
+## Estimates
+- Worst case (all timeouts): 12 x 1800 s + cooldowns ~= **6.5 h**
+- If Bonsai/C/D pass at ~0.4-1 t/s rates: still dominated by guards on E/F/G ~= **4-6 h**
+
+## Cancel
+```powershell
+Stop-Process -Id 16144 -Force            # overnight host
+Get-Process llama-cli,llama-bench -ErrorAction SilentlyContinue | Stop-Process -Force
+```
+
+## Fixes applied during launch
+- RUN_OVERNIGHT.ps1 rewritten: per-target queue (A-G), Start-Process+poll kill-guard (PS5.1 has no -PriorityClass on Start-Process; set via $proc.PriorityClass), buffered-stdout capture via redirect files (PRISM embedded-server safe), per-run result.json (WALL_S/TIMEOUT/PEAK_MB/EXIT/pp/tg).
+- File kept pure-ASCII (PS 5.1 misreads UTF-8-no-BOM em-dashes as quotes -> script was silently skipping the loop).
+
+
+===== PATCH_k2horizon_APPLIED_2026-09-22.md =====
+# PATCH k2-horizon APPLIED ??? 2026-09-22 (STOCK llama.cpp-original only)
+
+Scope: H3-H8 (+H9 evaluated) from FIX_stock_parity_PREP_2026-09-21. Stock tree: `shared/llama.cpp-original` (b11065 ce8caa6e).
+MOD tree `shared/llama.cpp-abelianIUT`: READ-ONLY throughout, untouched (only read/grep).
+No cmake, no build, no llama-cli/bench, no inference. H1/H2 (rope guard) intentionally NOT part of this patch (different hunk set).
+
+Hunks applied: 7 files edited + 1 new file. MOD graph (361 lines) adapted to STOCK's `llama_model_*` subclass API, not copied verbatim.
+
+## Files edited
+
+### H3 ??? `src/llama-arch.h` (enum)
+- before: :165-166 `LLM_ARCH_HRM_TEXT,` / `LLM_ARCH_UNKNOWN,`
+- after: :166 `LLM_ARCH_K2_HORIZON,` inserted between them (line numbers drift +1 below).
+
+### H-support ??? `src/llama-arch.h` (llm_kv enum)
+- after `LLM_KV_ATTENTION_GROUPNORM_GROUPS,` (was :269):
+  - :271 `LLM_KV_ATTENTION_VALUE_EXPERT_COUNT,`
+  - :272 `LLM_KV_ATTENTION_VALUE_EXPERT_USED_COUNT,`
+- (mirrors MOD llama-arch.h:232-233 placement)
+
+### H-support ??? `src/llama-arch.h` (llm_tensor enum)
+- after `LLM_TENSOR_ATTN_V,` (was :453):
+  - :457 `LLM_TENSOR_ATTN_V_GATE,`
+  - :458 `LLM_TENSOR_ATTN_V_EXPS,`
+- (mirrors MOD llama-arch.h:378-379 placement)
+
+### H4 ??? `src/llama-arch.cpp` (arch name table)
+- before: :161 `{ LLM_ARCH_UNKNOWN, "(unknown)" },` directly followed SPARK2_5 block end ...NANBEIGE/QWEN3TTS/POCKETTTS
+- after: :161 `{ LLM_ARCH_K2_HORIZON,       "k2-horizon"       },` inserted immediately before UNKNOWN.
+
+### H-support ??? `src/llama-arch.cpp` (KV name map)
+- after :264 GROUPNORM_GROUPS entry:
+  - :266 `{ LLM_KV_ATTENTION_VALUE_EXPERT_COUNT,      "%s.attention.value_expert_count"      },`
+  - :267 `{ LLM_KV_ATTENTION_VALUE_EXPERT_USED_COUNT, "%s.attention.value_expert_used_count" },`
+- (strings byte-equal to MOD llama-arch.cpp:228-229: `%s.attention.value_expert_count`, `%s.attention.value_expert_used_count`)
+
+### H-support ??? `src/llama-arch.cpp` (tensor name map)
+- after :443 `{ LLM_TENSOR_ATTN_V, "blk.%d.attn_v" },`:
+  - :447 `{ LLM_TENSOR_ATTN_V_GATE, "blk.%d.attn_v_gate" },`
+  - :448 `{ LLM_TENSOR_ATTN_V_EXPS, "blk.%d.attn_v_exps" },`
+- (names byte-equal to MOD :366-367)
+
+### H-support ??? `src/llama-arch.cpp` (tensor op table)
+- after :740 ATTN_V entry:
+  - :746 `{LLM_TENSOR_ATTN_V_GATE, {LLM_TENSOR_LAYER_REPEATING, GGML_OP_MUL_MAT}},`
+  - :747 `{LLM_TENSOR_ATTN_V_EXPS, {LLM_TENSOR_LAYER_REPEATING, GGML_OP_MUL_MAT_ID}},`
+- (ops byte-equal to MOD :602-603)
+
+### H-support ??? `src/llama-hparams.h`
+- after :116 `n_group_experts`:
+  ```cpp
+  // MoVA (k2-horizon)
+  uint32_t n_value_expert      = 0;
+  uint32_t n_value_expert_used = 0;
+  ```
+- (MOD llama-hparams.h:52-53; same defaults)
+
+### H-support ??? `src/llama-model.h` (llama_layer)
+- after :303 `wqkv_gate`:
+  ```cpp
+  // MoVA (k2-horizon)
+  struct ggml_tensor * attn_v_gate   = nullptr;
+  struct ggml_tensor * attn_v_gate_b = nullptr;
+  struct ggml_tensor * attn_v_exps   = nullptr;
+  ```
+- (MOD llama-model.h:258-260)
+
+### H5 ??? `src/llama-model.cpp` (factory)
+- after :345-346 SPARK2_5 case:
+  - :347-348 `case LLM_ARCH_K2_HORIZON:` / `return new llama_model_k2_horizon(params);`
+- Throw site :366-370 (`unknown model architecture`) unchanged; k2-horizon no longer reaches it.
+
+### H6 ??? `src/llama-model.cpp` (rope type)
+- after :3046 `case LLM_ARCH_SPARK2_5:` in the NEOX group: :3049 `case LLM_ARCH_K2_HORIZON:` (returns LLAMA_ROPE_TYPE_NEOX; matches MOD :10312).
+
+### H7 ??? `src/models/models.h`
+- after spark2_5 struct block (EOF was :2662): new struct `llama_model_k2_horizon` (:2664) mirroring spark2_5 pattern: ctor forwarding to llama_model_base, `load_arch_hparams`/`load_arch_tensors` overrides, nested `struct graph`, `build_arch_graph` override.
+- NEW FILE `src/models/k2-horizon.cpp` (~430 lines): hparams load + tensor load + graph, ported from MOD llama-model.cpp:3039-3082 / :8488-8568 / models/k2-horizon.cpp:1-361. No CMakeLists edit needed (`src/CMakeLists.txt:9` globs `models/*.cpp`).
+
+API adaptations vs MOD (the important deltas, for build-verify review):
+- MOD `hparams.n_ff_exp` is a scalar member; STOCK has `n_ff_exp_arr` + method `n_ff_exp(il)`. Hparams load uses `ml.get_key_or_arr(LLM_KV_EXPERT_FEED_FORWARD_LENGTH, hparams.n_ff_exp_arr, hparams.n_layer_all)` (bailingmoe2.cpp:5 pattern); tensor load uses local `n_ff_exp = hparams.n_ff_exp(i)`.
+- STOCK `build_attn` has an extra `wo_s` slot (12 args): non-gated call passes `(wo, /*wo_b*/nullptr, layer.wo_s, ...)`; gated call passes `(nullptr, nullptr, nullptr, ...)` then projects via `build_lora_mm(layer.wo, cur, layer.wo_s)` ??? same post-gate projection as MOD.
+- Q/K LoRA scale tensors `wq_s/wk_s/wv_s` and `wqkv_gate_s` passed as in MOD (STOCK model.cpp:1572-1590 auto-creates optional `*.scale` tensors; if GGUF lacks them they stay nullptr and build_lora_mm ignores them).
+- Model size mapping kept byte-equal to MOD: 28/1536 -> 1B, 48/2560 -> 36B, else UNKNOWN. NOTE: K2-Horizon-7B may fall into UNKNOWN type (cosmetic only; does not block load).
+- `#include <cmath>` added for `INFINITY` (MOD tree compiled without it; STOCK side kept explicit to avoid include-order surprises).
+- group-RMS helper `k2_horizon_group_rms_norm` copied 1:1 from MOD :4-38.
+- MoE gating default NONE -> SIGMOID kept (MOD :3058-3060).
+- MOD `ggml_group_norm` at STOCK llama-graph.cpp:1595 is a different (2D) path using n_norm_groups/f_norm_group_eps ??? NOT reused; k2 uses its own 3D grouped rms helper as MOD does.
+
+### H8 ??? vocab (fresh id 60, NOT 53)
+- `src/llama-vocab.h`: after :70 UFAKZEKA=59 -> `:71  LLAMA_VOCAB_PRE_TYPE_K2_HORIZON = 60,`
+- `src/llama-vocab.cpp`: after spark2_5 branch (:2199-2201) -> :2202-2205
+  ```cpp
+  } else if (
+          tokenizer_pre == "k2-horizon") {
+      pre_type = LLAMA_VOCAB_PRE_TYPE_K2_HORIZON;
+      clean_spaces = false;
+  ```
+- Regex switch: NOTHING added (MOD defines no custom k2 regex; inherits default BPE, per PREP H8).
+
+### H9 ??? gguf-py constants: NOT added
+Checked MOD `gguf-py/gguf/constants.py`: no k2-horizon entry exists there either (models were converted out-of-band). STOCK runtime never reads it. Flagged for reconversion work only.
+
+## Grep verification (post-edit, excerpts)
+- `K2_HORIZON` now resolves in: llama-arch.h:166, llama-arch.cpp:161, llama-model.cpp:347,3049, models.h:2664, llama-vocab.h:71, llama-vocab.cpp:2203.
+- New KV ids: llama-arch.h:271-272 + llama-arch.cpp:266-267.
+- New tensor ids: llama-arch.h:457-458 + names llama-arch.cpp:447-448 + ops llama-arch.cpp:746-747 + layer fields llama-model.h:306-308 + hparams llama-hparams.h:119-120.
+- No other tree touched; no other vocab id reassigned (53 stays WHITESPACE).
+
+## Known risk points for build-verify phase
+1. `n_ff_exp_arr` vs scalar: MOD read EXPERT_FEED_FORWARD_LENGTH as scalar; STOCK array form tolerates both scalar and per-layer arrays via get_key_or_arr. Watch for other MoE-style asserts (loader checks n_ff_exp_arr bounds).
+2. `n_expert` must be populated before `load_arch_hparams` (generic loader reads EXPERT_COUNT first ??? standard in this tree; verify in V3).
+3. STOCK graph context members `n_rot/freq_base/...` are global (not per-layer) ??? matches MOD's k2 usage; fine for uniform-head k2.
+4. `build_attn` gated-branch wo==nullptr returns flattened [n_embd_head*n_head, n_tokens]; gate mul then wo projection relies on that 2D shape. Same assumption MOD makes; first compile+load run must confirm no shape assert.
+5. `LLAMA_MAX_EXPERTS=1024` assert on n_value_expert; 36B MoVA must fit.
+6. `type` stays LLM_TYPE_UNKNOWN for 7B (28-layer non-1536 embd) ??? cosmetic; confirm no downstream assert on type in STOCK loader.
+7. `ggml_argsort_top_k`, `ggml_softplus`, `ggml_clamp(f32 min,max)` signatures assumed equal between trees (both b11k-fork lineage) ??? verify at compile.
+8. 17-MoVA-36B: expected correct arch accept, then CPU-timeout/too-big (PREP risk note). 16-7B is the real smoke target per PREP V3.
+9. H1/H2 (qwen3.5 rope guard) still pending ??? separate hunk, GL claims bug exp4-got-3 untouched by this patch.
+
+
+===== PATCH_rope_APPLIED_2026-09-22.md =====
+# PATCH rope APPLIED ??? 2026-09-22 (H1 + H2, STOCK only)
+
+Source: hunks H1/H2 from `FIX_stock_parity_PREP_2026-09-21.md` + `patches_preview/hunk1_rope_guard.diff`.
+Target: `shared/llama.cpp-original` (b11065). No builds, no runs. MOD tree NOT touched (read-only reference).
+
+## H1 ??? loader wildcard guard
+File: `src/llama-model-loader.cpp` (guard at line 481 after edit, was 477)
+
+Before:
+```
+            if (n != arr_info.length) {
+```
+After:
+```
+            // n == 0 is a wildcard: accept the array at its actual length instead
+            // of enforcing a fixed count.  Used by Qwen3.5 GGUFs whose
+            // rope.dimension_sections may carry 3 or 4 entries depending on the
+            // converter; get_arr() below reads exactly arr_info.length elements.
+            if (n != 0 && n != arr_info.length) {
+```
+MOD equivalent: `llama.cpp-abelianIUT/src/llama-model-loader.cpp:461` ??? identical line and comment.
+
+## H2 ??? qwen35 call sites (4 -> 0)
+File: `src/models/qwen35.cpp:6`
+- Before: `ml.get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS,    hparams.rope_sections, 4, true);`
+- After:  `ml.get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS,    hparams.rope_sections, 0, true);`
+
+File: `src/models/qwen35moe.cpp:9`
+- Before: `ml.get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS,    hparams.rope_sections, 4, true);`
+- After:  `ml.get_key_or_arr(LLM_KV_ROPE_DIMENSION_SECTIONS,    hparams.rope_sections, 0, true);`
+
+MOD equivalents: `llama.cpp-abelianIUT/src/llama-model.cpp:2813` (QWEN35) and `:2850` (QWEN35MOE) ??? both `0, true`. Match.
+
+## Verification (grep over shared/)
+- STOCK `qwen35.cpp:6` and `qwen35moe.cpp:9` now show `0, true`; loader shows `n != 0 && n != arr_info.length` at 481.
+- Intentionally unchanged: STOCK `qwen2vl.cpp:4`, `qwen3vl.cpp:5`, `qwen3vlmoe.cpp:5`, `qwen4exp.cpp:31` stay at `4, true`; MOD NEXTN at 2884/2900 stay at 4 (not ported). Scalar overload `get_key_or_arr(uint32_t&)` untouched.
+- `llama.cpp-prism` tree also untouched (still shows old strict lines ??? out of scope).
+
+## Confirmation
+Zero builds/runs executed. MOD tree untouched (read-only). Files edited: 3, all in `llama.cpp-original` only.
+
+
+===== PQ2_0_avx2_RATIONALE.md =====
+# PQ2_0 AVX2 vec_dot candidate - rationale
+
+Target: Ryzen 5 5600G (Zen 3: AVX2 + FMA3, NO AVX512, NO AVX-VNNI). Today it falls
+into the scalar `#else` fallback of `ggml_vec_dot_pq2_0_q8_0` because the fast
+branch requires `__AVX512VNNI__ + __AVX512VL__` or `__AVXVNNI__`.
+
+Patch site: `ggml/src/ggml-cpu/arch/x86/quants.c`, function
+`ggml_vec_dot_pq2_0_q8_0` (starts line 561). The diff inserts an
+`#elif defined(__AVX2__)` branch between the existing VNNI branch and the
+scalar `#else`. Confirmed in `arch-fallback.h` (line ~195, AVX2 guard section)
+that AVX2 builds currently alias `ggml_vec_dot_pq2_0_q8_0` to the generic, so
+adding a real AVX2 branch in the x86 file is exactly the intended fix point.
+
+## (a) Byte layout of block_pq2_0 (ggml-common.h lines 200-207)
+
+```c
+#define QK_PQ2_0 128
+typedef struct {
+    ggml_half d;                    // one fp16 scale per 128 weights
+    uint8_t   qs[QK_PQ2_0 / 4];     // 32 bytes, 2 bits per element
+} block_pq2_0;                      // sizeof = 2 + 32 = 34
+```
+
+Same 2-bit codec as Q2_0 but group-128 instead of group-32. Codes c in
+{0,1,2,3} map to values (c-1) in {-1,0,1,2} ("2.5 bpw ternary pair"). Packing:
+block byte b holds weights 4b..4b+3, weight j uses bits (2*(j%4))..(2*(j%4)+1)
+of byte j/4. The counterpart y rows are block_q8_0: ggml_half d + 32 int8
+(qs), values in [-127,127]. One PQ2_0 block pairs with 4 q8_0 blocks:
+sub-block k (32 weights) uses `x[i].qs[k*8 .. k*8+7]` and `y[i*4+k]`.
+
+## (b) Generic (scalar) loop, op by op
+
+Per block i (nb blocks), per sub-block k in 0..3:
+1. Load q8 scale d1 = fp32(y[i*4+k].d).
+2. For each of 8 bytes: extract four 2-bit codes via `(byte>>s)&3` (s=0,2,4,6),
+   subtract 1, multiply by qy[b*4+j], accumulate into int `sumi_block`
+   (128 scalar int multiply-adds per sub-block).
+3. `sumi += d1 * sumi_block` (float).
+Per block: `sumf += d0 * sumi`, d0 = fp32(x[i].d). Final `*s = sumf`.
+
+Cost: ~128 scalar imul+iadd plus 8 shifts/ands per sub-block = ~512 int ops +
+loads per 34-byte block. This is the 0.4 t/s path.
+
+## (c) AVX2 kernel mapping
+
+Identical unpack as the existing VNNI branch (every intrinsic in that prologue
+is already pure AVX2 - the VNNI part was only the dpbusd at the end):
+
+Per sub-block:
+1. `qy = _mm256_loadu_si256(yb->qs)` - all 32 int8 activations at once.
+2. `src = _mm_loadl_epi64(&x[i].qs[k*8])` - 8 packed bytes.
+3. `_mm_shuffle_epi8(src, idxlo/idxhi)` - broadcast each byte to 4 lanes
+   (idxlo: bytes 0-3 x4 each; idxhi: bytes 4-7 x4 each);
+   `MM256_SET_M128I` joins them into 32 bytes, one per code position.
+   (MM256_SET_M128I is the file's portable `_mm256_set_m128i`, line 26.)
+4. `_mm256_cvtepu8_epi16` x2, `_mm256_mullo_epi16(mul)` with
+   mul=(64,16,4,1)x4 = shift left by (6-2c), `_mm256_srli_epi16(6)`,
+   `_mm256_and_si256(three=3)` -> each 16-bit lane = the 2-bit code.
+   Position j in the register corresponds to (byte j/4, slot j%4) with
+   multiplier selecting shift amount - verified algebra: (b*64>>6)&3 = b&3,
+   (b*16>>6)&3 = (b>>2)&3, (b*4>>6)&3 = (b>>4)&3, (b*1>>6)&3 = (b>>6)&3.
+5. `_mm256_packus_epi16(r0, r1)` + `_mm256_permute4x64_epi64(0xD8)` restores
+   sequential order: 32 codes as unsigned int8, aligned 1:1 with qy.
+6. Replace dpbusd with the classic AVX2 pair:
+   - `dp = hsum_i32_8(madd_epi16(maddubs_epi16(codes, qy), ones16))`
+     = sum_j c_j * qy_j   (maddubs: u8*s8 -> s16 pairs, madd: pairs -> s32)
+   - `sy = hsum_i32_8(madd_epi16(maddubs_epi16(ones8, qy), ones16))`
+     = sum_j qy_j
+7. `sumi += d1 * (float)(dp - sy)` - bit-identical expression to the VNNI
+   branch, because (c-1)*q = c*q - q.
+
+No tail handling needed: `assert(n % qk == 0)` and both existing paths loop
+over full blocks only; the AVX2 branch copies that structure exactly.
+
+## (d) Why 5-10x
+
+Per sub-block the generic loop executes ~512 scalar int ops. The AVX2 kernel
+executes ~15 SIMD instructions (load, 2 shuffles, combine, 2 cvt, 2 mullo,
+2 srli, 2 and, pack, permute, 2 maddubs, 2 madd, 2 hsum) for the same 128
+MACs - a ~30x op-count reduction in the hot part; net of hsum (3-level, 2x per
+sub-block) and scale handling, realistic wall speedup is 5-10x
+(Zen 3: 2x256-bit FMA/PMADDWD pipes, maddubs = 1 uop / 3c lat / 0.5c tput).
+A further ~2x is available later by hoisting `sy` across sub-blocks and by
+batching all 4 sub-blocks with fp accumulators, but that changes the FP
+accumulation order and is deliberately left out to keep the patch
+obviously correct.
+
+## (e) Correctness argument
+
+- Integer exactness: maddubs unsigned arg codes in [0,3], signed qy in
+  [-127,127] => products in [-381,381], pairwise sum in [-762,762], fits int16
+  with no saturation (saturation range is [-32768,32767]). madd_epi16 with 1
+  sums pairs of those into int32 exactly. dp, sy, dp-sy are exact integers,
+  equal to the VNNI dpbusd results (dpbusd saturates only at int32 accumulate
+  - same here, unreachable: |sum| <= 128*381 < 2^16).
+- Float order: identical to the VNNI branch - int difference first, then
+  d1*(int), summed over k into float sumi, then d0*sumi into sumf. The scalar
+  path computes the same int per sub-block too (int add is associative and
+  exact), so all three paths agree bit-for-bit.
+- Unpack: step-by-step byte/shift algebra in (c-4) matches
+  `((byte>>s)&3)` for s=0,2,4,6; order after packus+permute4x64(0xD8) was
+  validated in the shipped VNNI code, which uses the identical sequence.
+- Registers/intrinsics: SSSE3 (shuffle_epi8, maddubs), AVX (cvtepu8_epi16 on
+  ymm is AVX2), AVX2 only for the rest. No AVX512, no VNNI, no GFNI.
+
+## (f) Test plan
+
+1. Apply: `git apply pq2_0_avx2_candidate.diff` in the prism repo.
+2. Cross-check harness (no new tests/* file - reuse existing):
+   - Build once with `-mavx2 -mno-avx512f` (forces our branch) and once with
+     `-mno-avx2` (forces scalar `#else`).
+   - Run `tests/test-quantize-fns` and the vec_dot path of
+     `test-backend-ops` (PQ2_0 is already in its type list, lines 8354+).
+     test-backend-ops compares CPU backend against itself, so primary gate is:
+3. Bit-exact check: tiny standalone driver calling
+   `ggml_vec_dot_pq2_0_q8_0` vs `ggml_vec_dot_pq2_0_q8_0_generic` (exported via
+   the generic symbol) over ~1000 randomized rows (n = 128*m, m up to 32),
+   including adversarial extremes (qy = +/-127, codes all 0 / all 3).
+   Require `avx2_result == generic_result` bitwise (both are the same int math
+   wrapped in the same float accumulation order, so exact equality is the
+   expected outcome; report max |diff| as well in case a compiler reorders FP).
+4. Then re-enable the bench (`llama-bench` with the PQ2_0 gguf on the 5600G)
+   after the overnight queue drains.
+
+## Note on an alternative (documented, not chosen)
+
+The `sy` term (sum of qy per q8_0 block) is activation-only. A future
+follow-up could precompute all 4 sy values per block with one 128-byte wide
+pass or keep a running fp accumulator like the q1_0 AVX2 kernel does. That
+trades bit-exactness vs the scalar path for another ~1.3-2x. Flag for
+PRISM_TEAM review; not part of this candidate.
+
+
+===== PRISM_BUILD_2026-09-21.md =====
+# PRISM engine CPU build ??? 2026-09-21 (UTC)
+
+## Source
+- repo: https://github.com/PrismML-Eng/llama.cpp (branch `prism`)
+- commit: `9a9394a895b96003ca842a6041cb28ac49a108f7`
+- commit date: 2026-09-18 15:24:35 -0700 (`build: fix Ubuntu ARM64 and Windows Vulkan release jobs (#198)`)
+- checkout: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-prism`
+- version record: `00-CPU-BENCH-MASTER\downloads\prism_version.txt`
+
+## Build (CPU-only)
+- env: VS18 BuildTools `VsDevCmd.bat -arch=amd64`, MSVC 19.50.35730.0, CMake 4.3.2, generator `Visual Studio 18 2026` x64
+- flags: `-DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DGGML_NATIVE=ON -DGGML_BLAS=OFF -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON` (+ `-A x64` to pin the VS generator to 64-bit)
+- threads: 6 (`-j 6`); full log: `00-CPU-BENCH-MASTER\logs\build_prism_cpu_2026-09-21.log` (238 KB)
+- result: **Build succeeded ??? 0 errors, 18 warnings** (benign C4244/C4267/C4804), time 00:14:37, exit code 0
+
+## Binaries
+- `shared\llama.cpp-prism\build_cpu_prism\bin\Release\llama-cli.exe` (9.5 KB shim + `llama-cli-impl.dll`)
+- `shared\llama.cpp-prism\build_cpu_prism\bin\Release\llama-server.exe` (present)
+- `llama-cli.exe --version` ??? `version: 0.2.0-dev (build 10709, commit 9a9394a89)`, `built with MSVC 19.50.35730.0 for x64`
+
+## PTQ/PQ support (source grep, Select-String)
+- **PTQ1_0: YES** ??? `GGML_TYPE_PTQ1_0 = 143` (ggml.h:436), `block_ptq1_0` group-128 trit packing (ggml-common.h:104-220), loader mapping (llama-model-loader.cpp:43,779), quant paths (llama-quant.cpp:396,503,825)
+- **PQ2_0: YES** ??? ggml.h:435, gguf.cpp:787/804/808, llama-model-loader.cpp:42/44/46/778, llama-quant.cpp:397/503/824
+- **Hadamard runtime: YES** ??? `GGML_HINT_SRC0_IS_HADAMARD` (ggml.h:449), `llama_verify_hadamard_graph` (llama-context.cpp:32-98,2692)
+
+## Smoke test (tiny, 120 s cap ??? KILLED per constraint)
+- cmd: `llama-cli -m ..\..\GGUF\llm-collection\19-ternary-bonsai-27b\Ternary-Bonsai-2-27B-PQ2_0.gguf -ngl 0 -c 512 -n 8 -p "Hi" --temp 0`
+- result: **TIMEOUT-KILLED after 120.0 s** ??? no OOM. Peak working set **6888.6 MB** on 32 GB box (??? model bytes resident; still loading/initializing when killed)
+- process stdout: empty (0 B); stderr: only `no usable GPU found / compiled without GPU support` warnings (expected, CPU-only)
+- raw capture: `00-CPU-BENCH-MASTER\logs\prism_smoke_2026-09-21.log` (+ `.err`); no stray `llama-cli` process left behind (verified)
+- inference verdict: **not proven** ??? engine loads the PQ2_0 file without error/reject, but 8-token generation did not complete inside the 120 s guard. No full benchmarks run (per constraint).
+
+## Return summary
+- binary: `F:\DAAVILE_ECOSYSTEM\trading_ecosystem_11\trading_ecosystem_9.0\shared\llama.cpp-prism\build_cpu_prism\bin\Release\llama-cli.exe`
+- support: PTQ1_0 YES / PQ2_0 YES / Hadamard runtime YES
+- smoke proof: killed at 120 s guard, peak 6888.6 MB, no OOM, no completion ??? see `logs\prism_smoke_2026-09-21.log*`
+
